@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HACKERFLIX DASHBOARD</title>
+<title>HACKERFLIX</title>
 <style>
   :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
@@ -12,59 +12,47 @@
     background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03), rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
     pointer-events: none; z-index: 1; }
 
-  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 15px 30px; display: flex; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 15px 30px; text-align: center; position: sticky; top: 0; z-index: 10; }
   header h1 { font-size: 22px; text-shadow: 0 0 10px var(--green); }
 
- .add-panel { margin: 20px; padding: 20px; background: var(--card); border: 1px solid var(--green); border-radius: 8px; display: flex; gap: 10px; flex-wrap: wrap; }
-.add-panel input,.add-panel select { background: #000; border: 1px solid var(--green); color: var(--green); padding: 10px; border-radius: 5px; width: 200px; }
-.add-panel button { background: var(--green); color: #000; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+  nav { display: flex; justify-content: center; gap: 20px; padding: 15px; background: var(--card); border-bottom: 1px solid var(--green-dark); }
+  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 8px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+  nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
 
-  nav { display: flex; justify-content: center; gap: 20px; padding: 15px; }
-  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 10px 25px; cursor: pointer; border-radius: 5px; font-weight: bold; }
-  nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 20px var(--green); }
-
-.container { padding: 20px; max-width: 1400px; margin: auto; z-index: 2; position: relative; }
-.categoria { display: none; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.container { padding: 20px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; } /* 3 POR LINHA */
 .categoria.active { display: grid; }
 
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; }
-.card:hover { transform: scale(1.05); border-color: var(--green); box-shadow: 0 0 25px #003b00; }
-.card img { width: 100%; height: 300px; object-fit: cover; }
-.card h3 { padding: 12px; font-size: 14px; text-align: center; }
+  /* CAPA MENOR */
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 6px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+.card:hover { transform: translateY(-3px); border-color: var(--green); box-shadow: 0 0 15px #003b00; }
+.card img { width: 100%; height: 180px; object-fit: cover; } /* ALTURA MENOR */
+.card h3 { padding: 8px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* PLAYER ESTILO YOUTUBE */
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { position: relative; width: 95%; max-width: 1200px; }
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { position: relative; width: 90%; max-width: 1100px; }
   video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); border-radius: 8px; outline: none; }
   
-  /* CONTROLES CUSTOM */
- .controls { width: 95%; max-width: 1200px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 0 0 8px 8px; margin-top: -5px; }
-.progress { width: 100%; height: 5px; background: #333; cursor: pointer; border-radius: 5px; }
-.progress-filled { height: 100%; background: var(--green); width: 0%; border-radius: 5px; }
-.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-.bottom-controls button { background: none; border: none; color: var(--green); font-size: 18px; cursor: pointer; padding: 5px 10px; }
-.bottom-controls input[type=range] { width: 100px; accent-color: var(--green); }
+.controls { width: 90%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 10px; border-radius: 0 0 8px 8px; border: 2px solid var(--green); border-top: none; }
+.progress { width: 100%; height: 6px; background: #002200; cursor: pointer; border-radius: 5px; }
+.progress-filled { height: 100%; background: var(--green); width: 0%; border-radius: 5px; box-shadow: 0 0 10px var(--green); }
+.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.bottom-controls button { background: none; border: none; color: var(--green); font-size: 18px; cursor: pointer; padding: 5px 8px; }
+.bottom-controls button:hover { text-shadow: 0 0 10px var(--green); }
+.bottom-controls input[type=range] { width: 80px; accent-color: var(--green); }
 .time { font-size: 12px; }
+
+  /* RESPONSIVO: 2 por linha no tablet, 1 no celular */
+  @media (max-width: 900px) { .categoria { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .categoria { grid-template-columns: repeat(1, 1fr); } }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>> HACKERFLIX_DASHBOARD.exe</h1>
-  <div>SYSTEM: ONLINE</div>
+  <h1>> HACKERFLIX.exe</h1>
 </header>
-
-<div class="add-panel">
-  <input type="text" id="titulo" placeholder="> TITULO">
-  <input type="text" id="capa" placeholder="> URL_CAPA.jpg">
-  <input type="text" id="link" placeholder="> URL_VIDEO.mp4">
-  <select id="categoria">
-    <option value="filmes">FILMES</option>
-    <option value="series">SERIES</option>
-    <option value="animes">ANIMES</option>
-  </select>
-  <button onclick="adicionarVideo()">[ + ADD ]</button>
-</div>
 
 <nav>
   <button onclick="mostrarCategoria('filmes')" class="active">[FILMES]</button>
@@ -73,39 +61,52 @@
 </nav>
 
 <div class="container">
-  <!-- FILMES - 2 EXEMPLOS -->
+  <!-- FILMES - EDITE AQUI -->
   <div id="filmes" class="categoria active">
     <div class="card">
-      <img src="https://placehold.co/220x300/003b00/00ff41?text=MATRIX" onclick="abrirVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-      <h3 onclick="abrirVideo('https://www.w3schools.com/html/mov_bbb.mp4')">> MATRIX_EXEMPLO_1</h3>
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=FILME_1" onclick="abrirVideo('LINK_DO_VIDEO_1.mp4')">
+      <h3 onclick="abrirVideo('LINK_DO_VIDEO_1.mp4')">FILME 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/220x300/003b00/00ff41?text=JOHN_WICK" onclick="abrirVideo('https://www.w3schools.com/html/movie.mp4')">
-      <h3 onclick="abrirVideo('https://www.w3schools.com/html/movie.mp4')">> JOHN_WICK_EXEMPLO_2</h3>
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=FILME_2" onclick="abrirVideo('LINK_DO_VIDEO_2.mp4')">
+      <h3 onclick="abrirVideo('LINK_DO_VIDEO_2.mp4')">FILME 2</h3>
     </div>
+    <div class="card">
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=FILME_3" onclick="abrirVideo('LINK_DO_VIDEO_3.mp4')">
+      <h3 onclick="abrirVideo('LINK_DO_VIDEO_3.mp4')">FILME 3</h3>
+    </div>
+    <!-- COPIE E COLE MAIS CARDS AQUI QUE VAI PRA BAIXO -->
   </div>
 
-  <!-- SERIES - 2 EXEMPLOS -->
+  <!-- SERIES - EDITE AQUI -->
   <div id="series" class="categoria">
     <div class="card">
-      <img src="https://placehold.co/220x300/003b00/00ff41?text=BREAKING_BAD" onclick="abrirVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-      <h3 onclick="abrirVideo('https://www.w3schools.com/html/mov_bbb.mp4')">> BREAKING_BAD_S01E01</h3>
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=SERIE_1" onclick="abrirVideo('LINK_DA_SERIE_1.mp4')">
+      <h3 onclick="abrirVideo('LINK_DA_SERIE_1.mp4')">SERIE 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/220x300/003b00/00ff41?text=STRANGER" onclick="abrirVideo('https://www.w3schools.com/html/movie.mp4')">
-      <h3 onclick="abrirVideo('https://www.w3schools.com/html/movie.mp4')">> STRANGER_THINGS_S01E01</h3>
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=SERIE_2" onclick="abrirVideo('LINK_DA_SERIE_2.mp4')">
+      <h3 onclick="abrirVideo('LINK_DA_SERIE_2.mp4')">SERIE 2</h3>
+    </div>
+    <div class="card">
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=SERIE_3" onclick="abrirVideo('LINK_DA_SERIE_3.mp4')">
+      <h3 onclick="abrirVideo('LINK_DA_SERIE_3.mp4')">SERIE 3</h3>
     </div>
   </div>
 
-  <!-- ANIMES - 2 EXEMPLOS -->
+  <!-- ANIMES - EDITE AQUI -->
   <div id="animes" class="categoria">
     <div class="card">
-      <img src="https://placehold.co/220x300/003b00/00ff41?text=NARUTO" onclick="abrirVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-      <h3 onclick="abrirVideo('https://www.w3schools.com/html/mov_bbb.mp4')">> NARUTO_EP_01</h3>
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=ANIME_1" onclick="abrirVideo('LINK_DO_ANIME_1.mp4')">
+      <h3 onclick="abrirVideo('LINK_DO_ANIME_1.mp4')">ANIME 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/220x300/003b00/00ff41?text=ONE_PIECE" onclick="abrirVideo('https://www.w3schools.com/html/movie.mp4')">
-      <h3 onclick="abrirVideo('https://www.w3schools.com/html/movie.mp4')">> ONE_PIECE_EP_01</h3>
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=ANIME_2" onclick="abrirVideo('LINK_DO_ANIME_2.mp4')">
+      <h3 onclick="abrirVideo('LINK_DO_ANIME_2.mp4')">ANIME 2</h3>
+    </div>
+    <div class="card">
+      <img src="https://placehold.co/300x180/003b00/00ff41?text=ANIME_3" onclick="abrirVideo('LINK_DO_ANIME_3.mp4')">
+      <h3 onclick="abrirVideo('LINK_DO_ANIME_3.mp4')">ANIME 3</h3>
     </div>
   </div>
 </div>
@@ -116,9 +117,7 @@
     <video id="video"></video>
   </div>
   <div class="controls">
-    <div class="progress" onclick="setProgress(event)">
-      <div class="progress-filled"></div>
-    </div>
+    <div class="progress" onclick="setProgress(event)"><div class="progress-filled"></div></div>
     <div class="bottom-controls">
       <div>
         <button onclick="playPause()">⏯️</button>
@@ -130,10 +129,7 @@
       </div>
       <div>
         <select onchange="setSpeed(this.value)" style="background:#000; color:var(--green); border:1px solid var(--green);">
-          <option value="0.5">0.5x</option>
-          <option value="1" selected>1x</option>
-          <option value="1.5">1.5x</option>
-          <option value="2">2x</option>
+          <option value="1" selected>1x</option><option value="1.5">1.5x</option><option value="2">2x</option>
         </select>
         <button onclick="expandir()">⛶</button>
         <button onclick="fecharVideo()">✖</button>
@@ -158,13 +154,10 @@
     video.src = link;
     video.play();
   }
-
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
-    video.pause();
-    video.src = '';
+    video.pause(); video.src = '';
   }
-
   function playPause() { video.paused ? video.play() : video.pause(); }
   function voltar10() { video.currentTime -= 10; }
   function avancar10() { video.currentTime += 10; }
@@ -174,33 +167,16 @@
   function expandir() { document.getElementById('videoWrapper').requestFullscreen(); }
 
   video.addEventListener('timeupdate', () => {
-    const percent = (video.currentTime / video.duration) * 100;
-    progress.style.width = `${percent}%`;
+    progress.style.width = `${(video.currentTime / video.duration) * 100}%`;
     document.getElementById('time').innerText = `${formatar(video.currentTime)} / ${formatar(video.duration)}`;
   });
-
   function setProgress(e) {
-    const width = e.currentTarget.clientWidth;
-    const clickX = e.offsetX;
-    video.currentTime = (clickX / width) * video.duration;
+    video.currentTime = (e.offsetX / e.currentTarget.clientWidth) * video.duration;
   }
-
-  function formatar(s) {
-    return new Date(s * 1000).toISOString().substr(11, 8);
-  }
-
-  // Atalhos teclado
+  function formatar(s) { return isNaN(s) ? "00:00" : new Date(s * 1000).toISOString().substr(14, 5); }
   document.addEventListener('keydown', e => {
-    if(e.key === ' ') playPause();
-    if(e.key === 'f') expandir();
-    if(e.key === 'Escape') fecharVideo();
-    if(e.key === 'ArrowRight') avancar10();
-    if(e.key === 'ArrowLeft') voltar10();
+    if(e.key === ' ') playPause(); if(e.key === 'f') expandir(); if(e.key === 'Escape') fecharVideo();
   });
-
-  function adicionarVideo() {
-    alert("Edite os 6 cards direto no código trocando o link. Ou me peça versão com BD.");
-  }
 </script>
 
 </body>
