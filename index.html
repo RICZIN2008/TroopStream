@@ -1,49 +1,167 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Vídeo</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .video-container {
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #000;
-        }
-        video {
-            width: 100%;
-            display: block;
-        }
-        h1 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKERFLIX</title>
+<style>
+  :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
+  body { background: var(--bg); color: var(--green); }
+  body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03), rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
+    pointer-events: none; z-index: 1; }
+
+  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
+  header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
+
+  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
+  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
+  nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
+
+.container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.categoria.active { display: grid; }
+
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+.card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; transform: scale(1.03); }
+.card img { width: 100%; height: 120px; object-fit: cover; }
+.card h3 { padding: 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+#player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+#videoWrapper { width: 100%; max-width: 1100px; }
+video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); outline: none; }
+  
+.controls { width: 100%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 8px; border: 2px solid var(--green); border-top: none; }
+.progress { width: 100%; height: 5px; background: #002200; cursor: pointer; }
+.progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); }
+.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; }
+.bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
+.bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
+.time { font-size: 11px; }
+</style>
 </head>
 <body>
 
-    <h1>Visualizando Vídeo do Pixeldrain</h1>
+<header>
+  <h1>> HACKERFLIX.exe</h1>
+</header>
 
-    <div class="video-container">
-        <video controls autoplay muted playsinline>
-            <source src="https://pixeldrain.com/api/file/Gtbg58Bk" type="video/mp4">
-            Seu navegador não suporta a tag de vídeo do HTML5.
-        </video>
+<nav>
+  <button onclick="mostrarCategoria('filmes', this)" class="active">[FILMES]</button>
+  <button onclick="mostrarCategoria('series', this)">[SERIES]</button>
+  <button onclick="mostrarCategoria('animes', this)">[ANIMES]</button>
+</nav>
+
+<div class="container">
+  <!-- FILMES -->
+  <div id="filmes" class="categoria active">
+    <div class="card" onclick="abrirVideo('https://stape.me/v/V6VPMJ77vgSKr7z/M%C3%A1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=MAQUINA+DE+GUERRA">
+      <h3>MÁQUINA DE GUERRA 2026</h3>
     </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_2_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
+      <h3>FILME 2</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_3_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
+      <h3>FILME 3</h3>
+    </div>
+  </div>
+
+  <!-- SERIES -->
+  <div id="series" class="categoria">
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_4_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1">
+      <h3>SERIE 1</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_5_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
+      <h3>SERIE 2</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_6_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
+      <h3>SERIE 3</h3>
+    </div>
+  </div>
+
+  <!-- ANIMES -->
+  <div id="animes" class="categoria">
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_7_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1">
+      <h3>ANIME 1</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_8_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
+      <h3>ANIME 2</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_9_AQUI')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
+      <h3>ANIME 3</h3>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER -->
+<div id="player">
+  <div id="videoWrapper"><video id="video" controls></video></div>
+  <div class="controls">
+    <div class="progress" onclick="setProgress(event)"><div class="progress-filled"></div></div>
+    <div class="bottom-controls">
+      <div>
+        <button onclick="playPause()">⏯️</button>
+        <button onclick="voltar10()">⏪10</button>
+        <button onclick="avancar10()">10⏩</button>
+        <button onclick="toggleMute()">🔊</button>
+        <input type="range" min="0" max="1" step="0.1" value="1" onchange="setVolume(this.value)">
+        <span class="time" id="time">00:00</span>
+      </div>
+      <div>
+        <button onclick="expandir()">⛶</button>
+        <button onclick="fecharVideo()">✖</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const video = document.getElementById('video');
+  const progress = document.querySelector('.progress-filled');
+
+  function mostrarCategoria(id, btn) {
+    document.querySelectorAll('.categoria').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function abrirVideo(link) {
+    document.getElementById('player').style.display = 'flex';
+    video.src = link; 
+    video.play();
+  }
+  function fecharVideo() {
+    document.getElementById('player').style.display = 'none';
+    video.pause(); video.src = '';
+  }
+  function playPause() { video.paused ? video.play() : video.pause(); }
+  function voltar10() { video.currentTime -= 10; }
+  function avancar10() { video.currentTime += 10; }
+  function toggleMute() { video.muted = !video.muted; }
+  function setVolume(val) { video.volume = val; }
+  function expandir() { document.getElementById('videoWrapper').requestFullscreen(); }
+
+  video.addEventListener('timeupdate', () => {
+    if(video.duration) progress.style.width = `${(video.currentTime / video.duration) * 100}%`;
+    document.getElementById('time').innerText = formatar(video.currentTime);
+  });
+  function setProgress(e) { video.currentTime = (e.offsetX / e.currentTarget.clientWidth) * video.duration; }
+  function formatar(s) { return isNaN(s) ? "00:00" : new Date(s * 1000).toISOString().substr(14, 5); }
+  document.addEventListener('keydown', e => {
+    if(e.key === ' ') playPause(); if(e.key === 'f') expandir(); if(e.key === 'Escape') fecharVideo();
+  });
+</script>
 
 </body>
 </html>
