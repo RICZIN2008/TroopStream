@@ -12,40 +12,35 @@
     background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03), rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
     pointer-events: none; z-index: 1; }
 
-  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 15px 30px; text-align: center; position: sticky; top: 0; z-index: 10; }
-  header h1 { font-size: 22px; text-shadow: 0 0 10px var(--green); }
+  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
+  header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
 
-  nav { display: flex; justify-content: center; gap: 20px; padding: 15px; background: var(--card); border-bottom: 1px solid var(--green-dark); }
-  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 8px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
+  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
 
-.container { padding: 20px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; } /* 3 POR LINHA */
+.container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; } /* SEMPRE 3 */
 .categoria.active { display: grid; }
 
-  /* CAPA MENOR */
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 6px; overflow: hidden; cursor: pointer; transition: 0.3s; }
-.card:hover { transform: translateY(-3px); border-color: var(--green); box-shadow: 0 0 15px #003b00; }
-.card img { width: 100%; height: 180px; object-fit: cover; } /* ALTURA MENOR */
-.card h3 { padding: 8px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* CAPA PEQUENA PRA CABER 3 NO CELL */
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+.card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; }
+.card img { width: 100%; height: 120px; object-fit: cover; } /* MENOR AINDA */
+.card h3 { padding: 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* PLAYER ESTILO YOUTUBE */
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { position: relative; width: 90%; max-width: 1100px; }
-  video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); border-radius: 8px; outline: none; }
+  /* PLAYER */
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { width: 100%; max-width: 1100px; }
+  video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); outline: none; }
   
-.controls { width: 90%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 10px; border-radius: 0 0 8px 8px; border: 2px solid var(--green); border-top: none; }
-.progress { width: 100%; height: 6px; background: #002200; cursor: pointer; border-radius: 5px; }
-.progress-filled { height: 100%; background: var(--green); width: 0%; border-radius: 5px; box-shadow: 0 0 10px var(--green); }
-.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
-.bottom-controls button { background: none; border: none; color: var(--green); font-size: 18px; cursor: pointer; padding: 5px 8px; }
-.bottom-controls button:hover { text-shadow: 0 0 10px var(--green); }
-.bottom-controls input[type=range] { width: 80px; accent-color: var(--green); }
-.time { font-size: 12px; }
-
-  /* RESPONSIVO: 2 por linha no tablet, 1 no celular */
-  @media (max-width: 900px) { .categoria { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 600px) { .categoria { grid-template-columns: repeat(1, 1fr); } }
+.controls { width: 100%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 8px; border: 2px solid var(--green); border-top: none; }
+.progress { width: 100%; height: 5px; background: #002200; cursor: pointer; }
+.progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); }
+.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; }
+.bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
+.bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
+.time { font-size: 11px; }
 </style>
 </head>
 <body>
@@ -61,61 +56,58 @@
 </nav>
 
 <div class="container">
-  <!-- FILMES - EDITE AQUI -->
+  <!-- FILMES -->
   <div id="filmes" class="categoria active">
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=FILME_1" onclick="abrirVideo('LINK_DO_VIDEO_1.mp4')">
-      <h3 onclick="abrirVideo('LINK_DO_VIDEO_1.mp4')">FILME 1</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1" onclick="abrirVideo('LINK_1.mp4')">
+      <h3 onclick="abrirVideo('LINK_1.mp4')">FILME 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=FILME_2" onclick="abrirVideo('LINK_DO_VIDEO_2.mp4')">
-      <h3 onclick="abrirVideo('LINK_DO_VIDEO_2.mp4')">FILME 2</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2" onclick="abrirVideo('LINK_2.mp4')">
+      <h3 onclick="abrirVideo('LINK_2.mp4')">FILME 2</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=FILME_3" onclick="abrirVideo('LINK_DO_VIDEO_3.mp4')">
-      <h3 onclick="abrirVideo('LINK_DO_VIDEO_3.mp4')">FILME 3</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3" onclick="abrirVideo('LINK_3.mp4')">
+      <h3 onclick="abrirVideo('LINK_3.mp4')">FILME 3</h3>
     </div>
-    <!-- COPIE E COLE MAIS CARDS AQUI QUE VAI PRA BAIXO -->
   </div>
 
-  <!-- SERIES - EDITE AQUI -->
+  <!-- SERIES -->
   <div id="series" class="categoria">
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=SERIE_1" onclick="abrirVideo('LINK_DA_SERIE_1.mp4')">
-      <h3 onclick="abrirVideo('LINK_DA_SERIE_1.mp4')">SERIE 1</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1" onclick="abrirVideo('LINK_4.mp4')">
+      <h3 onclick="abrirVideo('LINK_4.mp4')">SERIE 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=SERIE_2" onclick="abrirVideo('LINK_DA_SERIE_2.mp4')">
-      <h3 onclick="abrirVideo('LINK_DA_SERIE_2.mp4')">SERIE 2</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2" onclick="abrirVideo('LINK_5.mp4')">
+      <h3 onclick="abrirVideo('LINK_5.mp4')">SERIE 2</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=SERIE_3" onclick="abrirVideo('LINK_DA_SERIE_3.mp4')">
-      <h3 onclick="abrirVideo('LINK_DA_SERIE_3.mp4')">SERIE 3</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3" onclick="abrirVideo('LINK_6.mp4')">
+      <h3 onclick="abrirVideo('LINK_6.mp4')">SERIE 3</h3>
     </div>
   </div>
 
-  <!-- ANIMES - EDITE AQUI -->
+  <!-- ANIMES -->
   <div id="animes" class="categoria">
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=ANIME_1" onclick="abrirVideo('LINK_DO_ANIME_1.mp4')">
-      <h3 onclick="abrirVideo('LINK_DO_ANIME_1.mp4')">ANIME 1</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1" onclick="abrirVideo('LINK_7.mp4')">
+      <h3 onclick="abrirVideo('LINK_7.mp4')">ANIME 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=ANIME_2" onclick="abrirVideo('LINK_DO_ANIME_2.mp4')">
-      <h3 onclick="abrirVideo('LINK_DO_ANIME_2.mp4')">ANIME 2</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2" onclick="abrirVideo('LINK_8.mp4')">
+      <h3 onclick="abrirVideo('LINK_8.mp4')">ANIME 2</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/300x180/003b00/00ff41?text=ANIME_3" onclick="abrirVideo('LINK_DO_ANIME_3.mp4')">
-      <h3 onclick="abrirVideo('LINK_DO_ANIME_3.mp4')">ANIME 3</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3" onclick="abrirVideo('LINK_9.mp4')">
+      <h3 onclick="abrirVideo('LINK_9.mp4')">ANIME 3</h3>
     </div>
   </div>
 </div>
 
 <!-- PLAYER -->
 <div id="player">
-  <div id="videoWrapper">
-    <video id="video"></video>
-  </div>
+  <div id="videoWrapper"><video id="video" controls></video></div>
   <div class="controls">
     <div class="progress" onclick="setProgress(event)"><div class="progress-filled"></div></div>
     <div class="bottom-controls">
@@ -125,12 +117,9 @@
         <button onclick="avancar10()">10⏩</button>
         <button onclick="toggleMute()">🔊</button>
         <input type="range" min="0" max="1" step="0.1" value="1" onchange="setVolume(this.value)">
-        <span class="time" id="time">00:00 / 00:00</span>
+        <span class="time" id="time">00:00</span>
       </div>
       <div>
-        <select onchange="setSpeed(this.value)" style="background:#000; color:var(--green); border:1px solid var(--green);">
-          <option value="1" selected>1x</option><option value="1.5">1.5x</option><option value="2">2x</option>
-        </select>
         <button onclick="expandir()">⛶</button>
         <button onclick="fecharVideo()">✖</button>
       </div>
@@ -151,8 +140,7 @@
 
   function abrirVideo(link) {
     document.getElementById('player').style.display = 'flex';
-    video.src = link;
-    video.play();
+    video.src = link; video.play();
   }
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
@@ -163,16 +151,13 @@
   function avancar10() { video.currentTime += 10; }
   function toggleMute() { video.muted =!video.muted; }
   function setVolume(val) { video.volume = val; }
-  function setSpeed(val) { video.playbackRate = val; }
   function expandir() { document.getElementById('videoWrapper').requestFullscreen(); }
 
   video.addEventListener('timeupdate', () => {
     progress.style.width = `${(video.currentTime / video.duration) * 100}%`;
-    document.getElementById('time').innerText = `${formatar(video.currentTime)} / ${formatar(video.duration)}`;
+    document.getElementById('time').innerText = formatar(video.currentTime);
   });
-  function setProgress(e) {
-    video.currentTime = (e.offsetX / e.currentTarget.clientWidth) * video.duration;
-  }
+  function setProgress(e) { video.currentTime = (e.offsetX / e.currentTarget.clientWidth) * video.duration; }
   function formatar(s) { return isNaN(s) ? "00:00" : new Date(s * 1000).toISOString().substr(14, 5); }
   document.addEventListener('keydown', e => {
     if(e.key === ' ') playPause(); if(e.key === 'f') expandir(); if(e.key === 'Escape') fecharVideo();
