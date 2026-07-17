@@ -33,6 +33,7 @@
   .bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
   .bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
   .time { font-size: 11px; }
+  .loading { text-align: center; padding: 20px; }
 </style>
 </head>
 <body>
@@ -46,16 +47,56 @@
 </nav>
 
 <div class="container">
+  <!-- FILMES -->
   <div id="filmes" class="categoria active">
-    <div class="card" onclick="abrirVideo('V6VPMJ77vgSKr7z')">
+    <div class="card" onclick="abrirVideo('https://stape.me/v/V6VPMJ77vgSKr7z/M%C3%A1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4')">
       <img src="https://placehold.co/200x120/003b00/00ff41?text=MAQUINA+DE+GUERRA">
       <h3>MÁQUINA DE GUERRA 2026</h3>
     </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_2.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
+      <h3>FILME 2</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_3.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
+      <h3>FILME 3</h3>
+    </div>
   </div>
-  <div id="series" class="categoria"></div>
-  <div id="animes" class="categoria"></div>
+
+  <!-- SERIES -->
+  <div id="series" class="categoria">
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_4.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1">
+      <h3>SERIE 1</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_5.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
+      <h3>SERIE 2</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_6.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
+      <h3>SERIE 3</h3>
+    </div>
+  </div>
+
+  <!-- ANIMES -->
+  <div id="animes" class="categoria">
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_7.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=1">
+      <h3>ANIME 1</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_8.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
+      <h3>ANIME 2</h3>
+    </div>
+    <div class="card" onclick="abrirVideo('COLE_LINK_DIRETO_9.mp4')">
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
+      <h3>ANIME 3</h3>
+    </div>
+  </div>
 </div>
 
+<!-- PLAYER -->
 <div id="player">
   <div id="videoWrapper"><video id="video" controls></video></div>
   <div class="controls">
@@ -78,10 +119,6 @@
 </div>
 
 <script>
-  // COLOCA SEU LOGIN E KEY AQUI
-  const LOGIN = "SEU_LOGIN";
-  const KEY = "SUA_KEY";
-
   const video = document.getElementById('video');
   const progress = document.querySelector('.progress-filled');
 
@@ -92,34 +129,11 @@
     btn.classList.add('active');
   }
 
-  async function abrirVideo(fileid) {
+  function abrirVideo(link) {
     document.getElementById('player').style.display = 'flex';
-    video.src = "Carregando...";
-    
-    try {
-      // PASSO 1: Pega o ticket
-      const ticketRes = await fetch(`https://api.streamtape.com/file/dlticket?file=${fileid}&login=${LOGIN}&key=${KEY}`);
-      const ticketData = await ticketRes.json();
-      
-      if(ticketData.status !== 200) throw new Error(ticketData.msg);
-      
-      await new Promise(r => setTimeout(r, ticketData.result.wait_time * 1000)); // espera
-      
-      // PASSO 2: Pega o link direto
-      const linkRes = await fetch(`https://api.streamtape.com/file/dl?file=${fileid}&ticket=${ticketData.result.ticket}`);
-      const linkData = await linkRes.json();
-      
-      if(linkData.status !== 200) throw new Error(linkData.msg);
-      
-      video.src = linkData.result.url; // LINK .MP4 DIRETO
-      video.play();
-      
-    } catch(e) {
-      alert("Erro: " + e.message);
-      fecharVideo();
-    }
+    video.src = link; 
+    video.play().catch(e => alert("Erro ao carregar vídeo: " + e));
   }
-
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
     video.pause(); video.src = '';
