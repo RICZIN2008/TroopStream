@@ -23,31 +23,30 @@
 .categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; } /* SEMPRE 3 */
 .categoria.active { display: grid; }
 
-  /* CAPA PEQUENA PRA CABER 3 NO CELL */
 .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
-.card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; }
-.card img { width: 100%; height: 120px; object-fit: cover; } /* MENOR AINDA */
+.card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; transform: translateY(-2px); }
+.card img { width: 100%; height: 120px; object-fit: cover; }
 .card h3 { padding: 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* PLAYER */
+  /* PLAYER COMPLETO */
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
   #videoWrapper { width: 100%; max-width: 1100px; }
   video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); outline: none; }
   
 .controls { width: 100%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 8px; border: 2px solid var(--green); border-top: none; }
-.progress { width: 100%; height: 5px; background: #002200; cursor: pointer; }
-.progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); }
-.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; }
+.progress { width: 100%; height: 5px; background: #002200; cursor: pointer; border-radius: 3px; }
+.progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); border-radius: 3px; }
+.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; gap: 5px; }
 .bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
+.bottom-controls button:hover { text-shadow: 0 0 10px var(--green); }
 .bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
+.bottom-controls select { background: #000; color: var(--green); border: 1px solid var(--green); font-size: 11px; }
 .time { font-size: 11px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>> HACKERFLIX.exe</h1>
-</header>
+<header><h1>> HACKERFLIX.exe</h1></header>
 
 <nav>
   <button onclick="mostrarCategoria('filmes')" class="active">[FILMES]</button>
@@ -59,55 +58,55 @@
   <!-- FILMES -->
   <div id="filmes" class="categoria active">
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=1" onclick="abrirVideo('https://play-1.cnvods.com/m/Oppenheimer_2023_tt15398776.mp4?cnvs_token=1784244484-PP05i+3eI/TaH3mjWgK90MXYzeLnfgWCOepo/8K3bs0=&vid=13704&pid=461870&t=1784244484')">
-      <h3 onclick="abrirVideo('LINK_1.mp4')">FILME 1</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=OPPENHEIMER" onclick="abrirVideo('https://play-1.cnvods.com/m/Oppenheimer_2023_tt15398776.mp4?cnvs_token=1784244484-PP05i+3eI/TaH3mjWgK90MXYzeLnfgWCOepo/8K3bs0=&vid=13704&pid=461870&t=1784244484')">
+      <h3 onclick="abrirVideo('https://play-1.cnvods.com/m/Oppenheimer_2023_tt15398776.mp4?cnvs_token=1784244484-PP05i+3eI/TaH3mjWgK90MXYzeLnfgWCOepo/8K3bs0=&vid=13704&pid=461870&t=1784244484')">OPPENHEIMER 2023</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=2" onclick="abrirVideo('LINK_2.mp4')">
-      <h3 onclick="abrirVideo('LINK_2.mp4')">FILME 2</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=FILME_2" onclick="abrirVideo('SEU_LINK_2.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_2.mp4')">FILME 2</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=3" onclick="abrirVideo('LINK_3.mp4')">
-      <h3 onclick="abrirVideo('LINK_3.mp4')">FILME 3</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=FILME_3" onclick="abrirVideo('SEU_LINK_3.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_3.mp4')">FILME 3</h3>
     </div>
   </div>
 
   <!-- SERIES -->
   <div id="series" class="categoria">
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=1" onclick="abrirVideo('LINK_4.mp4')">
-      <h3 onclick="abrirVideo('LINK_4.mp4')">SERIE 1</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=SERIE_1" onclick="abrirVideo('SEU_LINK_SERIE_1.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_SERIE_1.mp4')">SERIE 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=2" onclick="abrirVideo('LINK_5.mp4')">
-      <h3 onclick="abrirVideo('LINK_5.mp4')">SERIE 2</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=SERIE_2" onclick="abrirVideo('SEU_LINK_SERIE_2.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_SERIE_2.mp4')">SERIE 2</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=3" onclick="abrirVideo('LINK_6.mp4')">
-      <h3 onclick="abrirVideo('LINK_6.mp4')">SERIE 3</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=SERIE_3" onclick="abrirVideo('SEU_LINK_SERIE_3.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_SERIE_3.mp4')">SERIE 3</h3>
     </div>
   </div>
 
   <!-- ANIMES -->
   <div id="animes" class="categoria">
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=1" onclick="abrirVideo('LINK_7.mp4')">
-      <h3 onclick="abrirVideo('LINK_7.mp4')">ANIME 1</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=ANIME_1" onclick="abrirVideo('SEU_LINK_ANIME_1.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_ANIME_1.mp4')">ANIME 1</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=2" onclick="abrirVideo('LINK_8.mp4')">
-      <h3 onclick="abrirVideo('LINK_8.mp4')">ANIME 2</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=ANIME_2" onclick="abrirVideo('SEU_LINK_ANIME_2.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_ANIME_2.mp4')">ANIME 2</h3>
     </div>
     <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=3" onclick="abrirVideo('LINK_9.mp4')">
-      <h3 onclick="abrirVideo('LINK_9.mp4')">ANIME 3</h3>
+      <img src="https://placehold.co/200x120/003b00/00ff41?text=ANIME_3" onclick="abrirVideo('SEU_LINK_ANIME_3.mp4')">
+      <h3 onclick="abrirVideo('SEU_LINK_ANIME_3.mp4')">ANIME 3</h3>
     </div>
   </div>
 </div>
 
-<!-- PLAYER -->
+<!-- PLAYER COMPLETO -->
 <div id="player">
-  <div id="videoWrapper"><video id="video" controls></video></div>
+  <div id="videoWrapper"><video id="video" crossorigin="anonymous"></video></div>
   <div class="controls">
     <div class="progress" onclick="setProgress(event)"><div class="progress-filled"></div></div>
     <div class="bottom-controls">
@@ -117,9 +116,15 @@
         <button onclick="avancar10()">10⏩</button>
         <button onclick="toggleMute()">🔊</button>
         <input type="range" min="0" max="1" step="0.1" value="1" onchange="setVolume(this.value)">
-        <span class="time" id="time">00:00</span>
+        <span class="time" id="time">00:00 / 00:00</span>
       </div>
       <div>
+        <select onchange="setSpeed(this.value)">
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
         <button onclick="expandir()">⛶</button>
         <button onclick="fecharVideo()">✖</button>
       </div>
@@ -140,7 +145,11 @@
 
   function abrirVideo(link) {
     document.getElementById('player').style.display = 'flex';
-    video.src = link; video.play();
+    
+    // PROXY PRA RODAR LINK CNVODS
+    const proxy = 'https://api.allorigins.win/raw?url=';
+    video.src = proxy + encodeURIComponent(link);
+    video.play().catch(e => alert("> ERRO: Token expirado. Copie o link novo e cole no HTML"));
   }
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
@@ -151,18 +160,20 @@
   function avancar10() { video.currentTime += 10; }
   function toggleMute() { video.muted =!video.muted; }
   function setVolume(val) { video.volume = val; }
+  function setSpeed(val) { video.playbackRate = val; }
   function expandir() { document.getElementById('videoWrapper').requestFullscreen(); }
 
   video.addEventListener('timeupdate', () => {
     progress.style.width = `${(video.currentTime / video.duration) * 100}%`;
-    document.getElementById('time').innerText = formatar(video.currentTime);
+    document.getElementById('time').innerText = `${formatar(video.currentTime)} / ${formatar(video.duration)}`;
   });
   function setProgress(e) { video.currentTime = (e.offsetX / e.currentTarget.clientWidth) * video.duration; }
   function formatar(s) { return isNaN(s) ? "00:00" : new Date(s * 1000).toISOString().substr(14, 5); }
   document.addEventListener('keydown', e => {
     if(e.key === ' ') playPause(); if(e.key === 'f') expandir(); if(e.key === 'Escape') fecharVideo();
+    if(e.key === 'ArrowRight') avancar10(); if(e.key === 'ArrowLeft') voltar10();
   });
 </script>
 
 </body>
-</html>
+                                         </html>
