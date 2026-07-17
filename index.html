@@ -8,85 +8,109 @@
   *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
   body{background:#141414;color:#fff}
   
-  header{background:#000;padding:15px 4%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
-  header h1{color:#E50914;font-size:28px;cursor:pointer}
-  #busca{background:#333;border:1px solid #555;padding:8px 12px;border-radius:4px;color:#fff;width:250px;outline:none}
-  #busca:focus{border-color:#E50914}
-
-  .container{padding:30px 4%}
-  .categoria{margin-bottom:40px}
-  .categoria h2{margin:20px 0 10px;font-size:20px;font-weight:bold}
-  .filmes{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;padding:10px 0}
+  header{background:#000;padding:15px 4%}
+  header h1{color:#E50914;font-size:28px}
+  
+  .container{padding:20px 4%}
+  .row{margin-bottom:35px}
+  .row h2{font-size:22px;margin-bottom:12px;font-weight:bold}
+  .filmes{display:flex;gap:10px;overflow-x:auto;padding:5px 0}
   .filmes::-webkit-scrollbar{height:6px}
-  .filmes::-webkit-scrollbar-thumb{background:#E50914;border-radius:10px}
+  .filmes::-webkit-scrollbar-thumb{background:#555;border-radius:4px}
   
-  /* CARD COM PLAY */
-  .card{min-width:200px;height:300px;background:#222;border-radius:6px;overflow:hidden;position:relative;transition:.3s}
-  .card:hover{transform:scale(1.08);z-index:10}
+  .card{min-width:210px;height:315px;position:relative;border-radius:5px;overflow:hidden;transition:.3s;flex-shrink:0}
+  .card:hover{transform:scale(1.08)}
   .card img{width:100%;height:100%;object-fit:cover}
-  
-  .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transition:.3s}
+  .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);display:flex;justify-content:center;align-items:center;opacity:0;transition:.3s}
   .card:hover .overlay{opacity:1}
-  .btn-play{width:60px;height:60px;background:#fff;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px;color:#000;cursor:pointer;margin-bottom:10px;border:none}
+  .btn-play{width:55px;height:55px;background:#fff;border:none;border-radius:50%;font-size:22px;cursor:pointer;font-weight:bold}
   .btn-play:hover{background:#E50914;color:#fff}
-  .card-titulo{font-size:15px;font-weight:bold;text-align:center;padding:0 10px}
-
-  /* PLAYER */
+  
   #player{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:999}
   #player video{width:100%;height:100%}
-  .fechar{position:absolute;top:20px;right:30px;font-size:50px;color:#fff;cursor:pointer;z-index:1000;transition:.2s}
+  .fechar{position:absolute;top:15px;right:25px;font-size:45px;color:#fff;cursor:pointer;z-index:1000;font-weight:bold}
   .fechar:hover{color:#E50914}
-  .loading{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;color:#E50914}
 </style>
 </head>
 <body>
 
-<header>
-  <h1 onclick="location.reload()">HACKERFLIX</h1>
-  <input type="text" id="busca" placeholder="Buscar filmes..." onkeyup="buscar()">
-</header>
+<header><h1>HACKERFLIX</h1></header>
 
 <div class="container">
   
-  <!-- CATEGORIA 1: AÇÃO -->
-  <div class="categoria">
-    <h2>Ação</h2>
+  <div class="row">
+    <h2>Filmes</h2>
     <div class="filmes">
       <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/6FfCk87JOM4hN0X9v4x0Z6sF2tC.jpg">
+        <img src="https://image.tmdb.org/t/p/w500/6FfCk87JOM4hN0X9v4x0Z6sF2tC.jpg" alt="Maquina de Guerra">
         <div class="overlay">
-          <button class="btn-play" onclick="tocar('https://filebin.net/o93326ds3v8p8ar4/M%C3%A1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4','Máquina de Guerra 2026')">▶</button>
-          <div class="card-titulo">Máquina de Guerra 2026</div>
+          <button class="btn-play" onclick="tocar('https://pixeldrain.com/api/file/Gtbg58Bk')">▶</button>
         </div>
       </div>
       
       <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkLFKBcsWW.jpg">
+        <img src="https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" alt="Filme 2">
         <div class="overlay">
-          <button class="btn-play" onclick="tocar('SEU_LINK_MP4_2','John Wick 4')">▶</button>
-          <div class="card-titulo">John Wick 4</div>
+          <button class="btn-play" onclick="tocar('LINK_API_FILME_2')">▶</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sYDXzcFS.jpg" alt="Filme 3">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('LINK_API_FILME_3')">▶</button>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- CATEGORIA 2: FICÇÃO -->
-  <div class="categoria">
-    <h2>Ficção Científica</h2>
+  
+  <div class="row">
+    <h2>Séries</h2>
     <div class="filmes">
       <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/1XDDXPXGiI8id7MrUxK36ke7gkV.jpg">
+        <img src="https://image.tmdb.org/t/p/w500/1LhW0L8qT5lM5o6l1K2g9v8w7x.jpg" alt="Serie 1">
         <div class="overlay">
-          <button class="btn-play" onclick="tocar('SEU_LINK_MP4_3','Duna Parte 2')">▶</button>
-          <div class="card-titulo">Duna Parte 2</div>
+          <button class="btn-play" onclick="tocar('LINK_API_SERIE_1')">▶</button>
         </div>
       </div>
       
       <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg">
+        <img src="https://image.tmdb.org/t/p/w500/2VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Serie 2">
         <div class="overlay">
-          <button class="btn-play" onclick="tocar('SEU_LINK_MP4_4','Oppenheimer')">▶</button>
-          <div class="card-titulo">Oppenheimer</div>
+          <button class="btn-play" onclick="tocar('LINK_API_SERIE_2')">▶</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/3VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Serie 3">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('LINK_API_SERIE_3')">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <h2>Animes</h2>
+    <div class="filmes">
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/4VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Anime 1">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('LINK_API_ANIME_1')">▶</button>
+        </div>
+      </div>
+      
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/5VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Anime 2">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('LINK_API_ANIME_2')">▶</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/6VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Anime 3">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('LINK_API_ANIME_3')">▶</button>
         </div>
       </div>
     </div>
@@ -94,52 +118,30 @@
 
 </div>
 
-<!-- PLAYER TELA CHEIA -->
 <div id="player">
   <span class="fechar" onclick="fechar()">×</span>
-  <div class="loading" id="loading">Carregando...</div>
-  <video id="video" controls></video>
+  <video id="video" controls autoplay></video>
 </div>
 
 <script>
-function tocar(link, titulo){
+function tocar(link){
   document.getElementById('player').style.display = 'block';
-  document.getElementById('loading').style.display = 'block';
   let v = document.getElementById('video');
   v.src = link;
-  v.load();
-  v.oncanplay = () => {document.getElementById('loading').style.display = 'none'; v.play()}
-  document.title = titulo + ' - HACKERFLIX';
+  v.play();
+  document.body.style.overflow = 'hidden';
 }
 
 function fechar(){
   let v = document.getElementById('video');
-  v.pause();
-  v.src = '';
+  v.pause(); v.src = '';
   document.getElementById('player').style.display = 'none';
-  document.title = 'HACKERFLIX';
+  document.body.style.overflow = 'auto';
 }
 
-document.addEventListener('keydown', e => { if(e.key === 'Escape') fechar() })
-
-function buscar(){
-  let input = document.getElementById('busca').value.toLowerCase();
-  let categorias = document.querySelectorAll('.categoria');
-  categorias.forEach(cat => {
-    let cards = cat.querySelectorAll('.card');
-    let temVisivel = false;
-    cards.forEach(card => {
-      let texto = card.innerText.toLowerCase();
-      if(texto.includes(input)){
-        card.style.display = 'block';
-        temVisivel = true;
-      } else {
-        card.style.display = 'none';
-      }
-    })
-    cat.style.display = temVisivel ? 'block' : 'none';
-  })
-}
+document.addEventListener('keydown', e => { 
+  if(e.key === 'Escape') fechar() 
+})
 </script>
 
 </body>
