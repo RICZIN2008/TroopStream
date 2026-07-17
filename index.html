@@ -11,41 +11,33 @@
   body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03), rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
     pointer-events: none; z-index: 1; }
-
   header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
   header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
-
   nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
-
-.container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.categoria.active { display: grid; }
-
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
-.card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; transform: scale(1.03); }
-.card img { width: 100%; height: 120px; object-fit: cover; }
-.card h3 { padding: 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-#player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-#videoWrapper { width: 100%; max-width: 1100px; }
-video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); outline: none; }
-  
-.controls { width: 100%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 8px; border: 2px solid var(--green); border-top: none; }
-.progress { width: 100%; height: 5px; background: #002200; cursor: pointer; }
-.progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); }
-.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; }
-.bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
-.bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
-.time { font-size: 11px; }
+  .container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
+  .categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .categoria.active { display: grid; }
+  .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+  .card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; transform: scale(1.03); }
+  .card img { width: 100%; height: 120px; object-fit: cover; }
+  .card h3 { padding: 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { width: 100%; max-width: 1100px; }
+  video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); outline: none; }
+  .controls { width: 100%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 8px; border: 2px solid var(--green); border-top: none; }
+  .progress { width: 100%; height: 5px; background: #002200; cursor: pointer; }
+  .progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); }
+  .bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; }
+  .bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
+  .bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
+  .time { font-size: 11px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>> HACKERFLIX.exe</h1>
-</header>
+<header><h1>> HACKERFLIX.exe</h1></header>
 
 <nav>
   <button onclick="mostrarCategoria('filmes', this)" class="active">[FILMES]</button>
@@ -54,56 +46,16 @@ video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var
 </nav>
 
 <div class="container">
-  <!-- FILMES -->
   <div id="filmes" class="categoria active">
-    <div class="card" onclick="abrirVideo('https://stape.me/v/V6VPMJ77vgSKr7z/M%C3%A1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4')">
+    <div class="card" onclick="abrirVideo('V6VPMJ77vgSKr7z')">
       <img src="https://placehold.co/200x120/003b00/00ff41?text=MAQUINA+DE+GUERRA">
       <h3>MÁQUINA DE GUERRA 2026</h3>
     </div>
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_2_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
-      <h3>FILME 2</h3>
-    </div>
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_3_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
-      <h3>FILME 3</h3>
-    </div>
   </div>
-
-  <!-- SERIES -->
-  <div id="series" class="categoria">
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_4_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=1">
-      <h3>SERIE 1</h3>
-    </div>
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_5_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
-      <h3>SERIE 2</h3>
-    </div>
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_6_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
-      <h3>SERIE 3</h3>
-    </div>
-  </div>
-
-  <!-- ANIMES -->
-  <div id="animes" class="categoria">
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_7_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=1">
-      <h3>ANIME 1</h3>
-    </div>
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_8_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=2">
-      <h3>ANIME 2</h3>
-    </div>
-    <div class="card" onclick="abrirVideo('COLE_LINK_MP4_9_AQUI')">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=3">
-      <h3>ANIME 3</h3>
-    </div>
-  </div>
+  <div id="series" class="categoria"></div>
+  <div id="animes" class="categoria"></div>
 </div>
 
-<!-- PLAYER -->
 <div id="player">
   <div id="videoWrapper"><video id="video" controls></video></div>
   <div class="controls">
@@ -126,6 +78,10 @@ video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var
 </div>
 
 <script>
+  // COLOCA SEU LOGIN E KEY AQUI
+  const LOGIN = "SEU_LOGIN";
+  const KEY = "SUA_KEY";
+
   const video = document.getElementById('video');
   const progress = document.querySelector('.progress-filled');
 
@@ -136,11 +92,34 @@ video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var
     btn.classList.add('active');
   }
 
-  function abrirVideo(link) {
+  async function abrirVideo(fileid) {
     document.getElementById('player').style.display = 'flex';
-    video.src = link; 
-    video.play();
+    video.src = "Carregando...";
+    
+    try {
+      // PASSO 1: Pega o ticket
+      const ticketRes = await fetch(`https://api.streamtape.com/file/dlticket?file=${fileid}&login=${LOGIN}&key=${KEY}`);
+      const ticketData = await ticketRes.json();
+      
+      if(ticketData.status !== 200) throw new Error(ticketData.msg);
+      
+      await new Promise(r => setTimeout(r, ticketData.result.wait_time * 1000)); // espera
+      
+      // PASSO 2: Pega o link direto
+      const linkRes = await fetch(`https://api.streamtape.com/file/dl?file=${fileid}&ticket=${ticketData.result.ticket}`);
+      const linkData = await linkRes.json();
+      
+      if(linkData.status !== 200) throw new Error(linkData.msg);
+      
+      video.src = linkData.result.url; // LINK .MP4 DIRETO
+      video.play();
+      
+    } catch(e) {
+      alert("Erro: " + e.message);
+      fecharVideo();
+    }
   }
+
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
     video.pause(); video.src = '';
