@@ -5,175 +5,142 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HACKERFLIX</title>
 <style>
-  :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
-  body { background: var(--bg); color: var(--green); }
-  body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03), rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
-    pointer-events: none; z-index: 1; }
-
-  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
-  header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
-
-  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
-  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
-  nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
-
-.container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; } /* SEMPRE 3 */
-.categoria.active { display: grid; }
-
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
-.card:hover { border-color: var(--green); box-shadow: 0 0 10px #003b00; transform: translateY(-2px); }
-.card img { width: 100%; height: 120px; object-fit: cover; }
-.card h3 { padding: 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-  /* PLAYER COMPLETO */
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { width: 100%; max-width: 1100px; }
-  video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); outline: none; }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+  body{background:#141414;color:#fff}
   
-.controls { width: 100%; max-width: 1100px; background: rgba(0,20,0,0.9); padding: 8px; border: 2px solid var(--green); border-top: none; }
-.progress { width: 100%; height: 5px; background: #002200; cursor: pointer; border-radius: 3px; }
-.progress-filled { height: 100%; background: var(--green); width: 0%; box-shadow: 0 0 10px var(--green); border-radius: 3px; }
-.bottom-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; flex-wrap: wrap; gap: 5px; }
-.bottom-controls button { background: none; border: none; color: var(--green); font-size: 16px; cursor: pointer; padding: 4px 6px; }
-.bottom-controls button:hover { text-shadow: 0 0 10px var(--green); }
-.bottom-controls input[type=range] { width: 60px; accent-color: var(--green); }
-.bottom-controls select { background: #000; color: var(--green); border: 1px solid var(--green); font-size: 11px; }
-.time { font-size: 11px; }
+  header{background:#000;padding:15px 4%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+  header h1{color:#E50914;font-size:28px;cursor:pointer}
+  #busca{background:#333;border:1px solid #555;padding:8px 12px;border-radius:4px;color:#fff;width:250px;outline:none}
+  #busca:focus{border-color:#E50914}
+
+  .container{padding:30px 4%}
+  .categoria{margin-bottom:40px}
+  .categoria h2{margin:20px 0 10px;font-size:20px;font-weight:bold}
+  .filmes{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;padding:10px 0}
+  .filmes::-webkit-scrollbar{height:6px}
+  .filmes::-webkit-scrollbar-thumb{background:#E50914;border-radius:10px}
+  
+  /* CARD COM PLAY */
+  .card{min-width:200px;height:300px;background:#222;border-radius:6px;overflow:hidden;position:relative;transition:.3s}
+  .card:hover{transform:scale(1.08);z-index:10}
+  .card img{width:100%;height:100%;object-fit:cover}
+  
+  .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transition:.3s}
+  .card:hover .overlay{opacity:1}
+  .btn-play{width:60px;height:60px;background:#fff;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px;color:#000;cursor:pointer;margin-bottom:10px;border:none}
+  .btn-play:hover{background:#E50914;color:#fff}
+  .card-titulo{font-size:15px;font-weight:bold;text-align:center;padding:0 10px}
+
+  /* PLAYER */
+  #player{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:999}
+  #player video{width:100%;height:100%}
+  .fechar{position:absolute;top:20px;right:30px;font-size:50px;color:#fff;cursor:pointer;z-index:1000;transition:.2s}
+  .fechar:hover{color:#E50914}
+  .loading{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;color:#E50914}
 </style>
 </head>
 <body>
 
-<header><h1>> HACKERFLIX.exe</h1></header>
-
-<nav>
-  <button onclick="mostrarCategoria('filmes')" class="active">[FILMES]</button>
-  <button onclick="mostrarCategoria('series')">[SERIES]</button>
-  <button onclick="mostrarCategoria('animes')">[ANIMES]</button>
-</nav>
+<header>
+  <h1 onclick="location.reload()">HACKERFLIX</h1>
+  <input type="text" id="busca" placeholder="Buscar filmes..." onkeyup="buscar()">
+</header>
 
 <div class="container">
-  <!-- FILMES -->
-  <div id="filmes" class="categoria active">
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=OPPENHEIMER" onclick="abrirVideo('https://filebin.net/o93326ds3v8p8ar4/M%c3%a1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4')">
-      <h3 onclick="abrirVideo('https://filebin.net/o93326ds3v8p8ar4/M%c3%a1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4')">OPPENHEIMER 2023</h3>
-    </div>
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=FILME_2" onclick="abrirVideo('SEU_LINK_2.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_2.mp4')">FILME 2</h3>
-    </div>
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=FILME_3" onclick="abrirVideo('SEU_LINK_3.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_3.mp4')">FILME 3</h3>
-    </div>
-  </div>
-
-  <!-- SERIES -->
-  <div id="series" class="categoria">
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=SERIE_1" onclick="abrirVideo('SEU_LINK_SERIE_1.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_SERIE_1.mp4')">SERIE 1</h3>
-    </div>
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=SERIE_2" onclick="abrirVideo('SEU_LINK_SERIE_2.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_SERIE_2.mp4')">SERIE 2</h3>
-    </div>
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=SERIE_3" onclick="abrirVideo('SEU_LINK_SERIE_3.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_SERIE_3.mp4')">SERIE 3</h3>
+  
+  <!-- CATEGORIA 1: AÇÃO -->
+  <div class="categoria">
+    <h2>Ação</h2>
+    <div class="filmes">
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/6FfCk87JOM4hN0X9v4x0Z6sF2tC.jpg">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('https://filebin.net/o93326ds3v8p8ar4/M%C3%A1quina.de.Guerra.2026.1080p.WEB-DL.x264.DUAL.5.1.mp4','Máquina de Guerra 2026')">▶</button>
+          <div class="card-titulo">Máquina de Guerra 2026</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkLFKBcsWW.jpg">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('SEU_LINK_MP4_2','John Wick 4')">▶</button>
+          <div class="card-titulo">John Wick 4</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ANIMES -->
-  <div id="animes" class="categoria">
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=ANIME_1" onclick="abrirVideo('SEU_LINK_ANIME_1.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_ANIME_1.mp4')">ANIME 1</h3>
-    </div>
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=ANIME_2" onclick="abrirVideo('SEU_LINK_ANIME_2.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_ANIME_2.mp4')">ANIME 2</h3>
-    </div>
-    <div class="card">
-      <img src="https://placehold.co/200x120/003b00/00ff41?text=ANIME_3" onclick="abrirVideo('SEU_LINK_ANIME_3.mp4')">
-      <h3 onclick="abrirVideo('SEU_LINK_ANIME_3.mp4')">ANIME 3</h3>
+  <!-- CATEGORIA 2: FICÇÃO -->
+  <div class="categoria">
+    <h2>Ficção Científica</h2>
+    <div class="filmes">
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/1XDDXPXGiI8id7MrUxK36ke7gkV.jpg">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('SEU_LINK_MP4_3','Duna Parte 2')">▶</button>
+          <div class="card-titulo">Duna Parte 2</div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <img src="https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg">
+        <div class="overlay">
+          <button class="btn-play" onclick="tocar('SEU_LINK_MP4_4','Oppenheimer')">▶</button>
+          <div class="card-titulo">Oppenheimer</div>
+        </div>
+      </div>
     </div>
   </div>
+
 </div>
 
-<!-- PLAYER COMPLETO -->
+<!-- PLAYER TELA CHEIA -->
 <div id="player">
-  <div id="videoWrapper"><video id="video" crossorigin="anonymous"></video></div>
-  <div class="controls">
-    <div class="progress" onclick="setProgress(event)"><div class="progress-filled"></div></div>
-    <div class="bottom-controls">
-      <div>
-        <button onclick="playPause()">⏯️</button>
-        <button onclick="voltar10()">⏪10</button>
-        <button onclick="avancar10()">10⏩</button>
-        <button onclick="toggleMute()">🔊</button>
-        <input type="range" min="0" max="1" step="0.1" value="1" onchange="setVolume(this.value)">
-        <span class="time" id="time">00:00 / 00:00</span>
-      </div>
-      <div>
-        <select onchange="setSpeed(this.value)">
-          <option value="0.5">0.5x</option>
-          <option value="1" selected>1x</option>
-          <option value="1.5">1.5x</option>
-          <option value="2">2x</option>
-        </select>
-        <button onclick="expandir()">⛶</button>
-        <button onclick="fecharVideo()">✖</button>
-      </div>
-    </div>
-  </div>
+  <span class="fechar" onclick="fechar()">×</span>
+  <div class="loading" id="loading">Carregando...</div>
+  <video id="video" controls></video>
 </div>
 
 <script>
-  const video = document.getElementById('video');
-  const progress = document.querySelector('.progress-filled');
+function tocar(link, titulo){
+  document.getElementById('player').style.display = 'block';
+  document.getElementById('loading').style.display = 'block';
+  let v = document.getElementById('video');
+  v.src = link;
+  v.load();
+  v.oncanplay = () => {document.getElementById('loading').style.display = 'none'; v.play()}
+  document.title = titulo + ' - HACKERFLIX';
+}
 
-  function mostrarCategoria(id) {
-    document.querySelectorAll('.categoria').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.target.classList.add('active');
-  }
+function fechar(){
+  let v = document.getElementById('video');
+  v.pause();
+  v.src = '';
+  document.getElementById('player').style.display = 'none';
+  document.title = 'HACKERFLIX';
+}
 
-  function abrirVideo(link) {
-    document.getElementById('player').style.display = 'flex';
-    
-    // PROXY PRA RODAR LINK CNVODS
-    const proxy = 'https://api.allorigins.win/raw?url=';
-    video.src = proxy + encodeURIComponent(link);
-    video.play().catch(e => alert("> ERRO: Token expirado. Copie o link novo e cole no HTML"));
-  }
-  function fecharVideo() {
-    document.getElementById('player').style.display = 'none';
-    video.pause(); video.src = '';
-  }
-  function playPause() { video.paused ? video.play() : video.pause(); }
-  function voltar10() { video.currentTime -= 10; }
-  function avancar10() { video.currentTime += 10; }
-  function toggleMute() { video.muted =!video.muted; }
-  function setVolume(val) { video.volume = val; }
-  function setSpeed(val) { video.playbackRate = val; }
-  function expandir() { document.getElementById('videoWrapper').requestFullscreen(); }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') fechar() })
 
-  video.addEventListener('timeupdate', () => {
-    progress.style.width = `${(video.currentTime / video.duration) * 100}%`;
-    document.getElementById('time').innerText = `${formatar(video.currentTime)} / ${formatar(video.duration)}`;
-  });
-  function setProgress(e) { video.currentTime = (e.offsetX / e.currentTarget.clientWidth) * video.duration; }
-  function formatar(s) { return isNaN(s) ? "00:00" : new Date(s * 1000).toISOString().substr(14, 5); }
-  document.addEventListener('keydown', e => {
-    if(e.key === ' ') playPause(); if(e.key === 'f') expandir(); if(e.key === 'Escape') fecharVideo();
-    if(e.key === 'ArrowRight') avancar10(); if(e.key === 'ArrowLeft') voltar10();
-  });
+function buscar(){
+  let input = document.getElementById('busca').value.toLowerCase();
+  let categorias = document.querySelectorAll('.categoria');
+  categorias.forEach(cat => {
+    let cards = cat.querySelectorAll('.card');
+    let temVisivel = false;
+    cards.forEach(card => {
+      let texto = card.innerText.toLowerCase();
+      if(texto.includes(input)){
+        card.style.display = 'block';
+        temVisivel = true;
+      } else {
+        card.style.display = 'none';
+      }
+    })
+    cat.style.display = temVisivel ? 'block' : 'none';
+  })
+}
 </script>
 
 </body>
-                                         </html>
+</html>
