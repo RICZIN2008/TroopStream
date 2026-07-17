@@ -2,147 +2,83 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HACKERFLIX</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
   body{background:#141414;color:#fff}
-  
-  header{background:#000;padding:15px 4%}
-  header h1{color:#E50914;font-size:28px}
-  
-  .container{padding:20px 4%}
-  .row{margin-bottom:35px}
-  .row h2{font-size:22px;margin-bottom:12px;font-weight:bold}
-  .filmes{display:flex;gap:10px;overflow-x:auto;padding:5px 0}
-  .filmes::-webkit-scrollbar{height:6px}
-  .filmes::-webkit-scrollbar-thumb{background:#555;border-radius:4px}
-  
-  .card{min-width:210px;height:315px;position:relative;border-radius:5px;overflow:hidden;transition:.3s;flex-shrink:0}
-  .card:hover{transform:scale(1.08)}
-  .card img{width:100%;height:100%;object-fit:cover}
-  .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);display:flex;justify-content:center;align-items:center;opacity:0;transition:.3s}
-  .card:hover .overlay{opacity:1}
-  .btn-play{width:55px;height:55px;background:#fff;border:none;border-radius:50%;font-size:22px;cursor:pointer;font-weight:bold}
-  .btn-play:hover{background:#E50914;color:#fff}
-  
+  header{background:#000;padding:15px 4%} header h1{color:#E50914;font-size:28px}
+.container{padding:20px 4%}
+.row{margin-bottom:35px}.row h2{font-size:22px;margin-bottom:12px;font-weight:bold}
+.filmes{display:flex;gap:10px;overflow-x:auto;padding:5px 0}
+.card{min-width:210px;height:315px;position:relative;border-radius:5px;overflow:hidden;transition:.3s;flex-shrink:0;background:#222}
+.card:hover{transform:scale(1.08)}
+.card img{width:100%;height:100%;object-fit:cover}
+.titulo{position:absolute;bottom:0;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.9));padding:40px 8px 8px;font-size:14px;font-weight:bold}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);display:flex;justify-content:center;align-items:center;opacity:0;transition:.3s}
+.card:hover.overlay{opacity:1}
+.btn-play{width:55px;height:55px;background:#fff;border:none;border-radius:50%;font-size:22px;cursor:pointer;font-weight:bold}
+.btn-play:hover{background:#E50914;color:#fff}
   #player{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:999}
-  #player video{width:100%;height:100%}
-  .fechar{position:absolute;top:15px;right:25px;font-size:45px;color:#fff;cursor:pointer;z-index:1000;font-weight:bold}
-  .fechar:hover{color:#E50914}
+  #player video{width:100%;height:100%}.fechar{position:absolute;top:15px;right:25px;font-size:45px;color:#fff;cursor:pointer;z-index:1000;font-weight:bold}
 </style>
 </head>
 <body>
 
 <header><h1>HACKERFLIX</h1></header>
-
 <div class="container">
-  
-  <div class="row">
-    <h2>Filmes</h2>
-    <div class="filmes">
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/6FfCk87JOM4hN0X9v4x0Z6sF2tC.jpg" alt="Maquina de Guerra">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('https://pixeldrain.com/api/file/Gtbg58Bk')">▶</button>
-        </div>
-      </div>
-      
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg" alt="Filme 2">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_FILME_2')">▶</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sYDXzcFS.jpg" alt="Filme 3">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_FILME_3')">▶</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="row">
-    <h2>Séries</h2>
-    <div class="filmes">
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/1LhW0L8qT5lM5o6l1K2g9v8w7x.jpg" alt="Serie 1">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_SERIE_1')">▶</button>
-        </div>
-      </div>
-      
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/2VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Serie 2">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_SERIE_2')">▶</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/3VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Serie 3">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_SERIE_3')">▶</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="row">
-    <h2>Animes</h2>
-    <div class="filmes">
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/4VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Anime 1">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_ANIME_1')">▶</button>
-        </div>
-      </div>
-      
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/5VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Anime 2">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_ANIME_2')">▶</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/6VWiJpJfL0J2A9q0w0w0w0w0w.jpg" alt="Anime 3">
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('LINK_API_ANIME_3')">▶</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <div class="row"><h2>Filmes</h2><div class="filmes" id="filmes"></div></div>
+  <div class="row"><h2>Séries</h2><div class="filmes" id="series"></div></div>
+  <div class="row"><h2>Animes</h2><div class="filmes" id="animes"></div></div>
 </div>
 
-<div id="player">
-  <span class="fechar" onclick="fechar()">×</span>
-  <video id="video" controls autoplay></video>
-</div>
+<div id="player"><span class="fechar" onclick="fechar()">×</span><video id="video" controls autoplay></video></div>
 
 <script>
-function tocar(link){
-  document.getElementById('player').style.display = 'block';
-  let v = document.getElementById('video');
-  v.src = link;
-  v.play();
-  document.body.style.overflow = 'hidden';
+const API_KEY = "483c1e13-275f-4047-b74b-cc7afeced5c6";
+
+async function carregar(){
+  const resp = await fetch("https://pixeldrain.com/api/user/files", {
+    headers: {"Authorization": "Basic " + btoa(":" + API_KEY)},
+  });
+  const data = await resp.json();
+
+  const filmes = []; const series = []; const animes = [];
+
+  data.files.forEach(file => {
+    // Separa: Nome | Capa
+    const partes = file.name.split(' | ');
+    if(partes.length < 2) return; // ignora se não tiver capa
+
+    const info = {nome: partes[0], capa: partes[1], id: file.id};
+
+    if(info.nome.toLowerCase().includes('filme')) filmes.push(info);
+    if(info.nome.toLowerCase().includes('serie')) series.push(info);
+    if(info.nome.toLowerCase().includes('anime')) animes.push(info);
+  });
+
+  montar('filmes', filmes.slice(0,3));
+  montar('series', series.slice(0,3));
+  montar('animes', animes.slice(0,3));
 }
 
-function fechar(){
-  let v = document.getElementById('video');
-  v.pause(); v.src = '';
-  document.getElementById('player').style.display = 'none';
-  document.body.style.overflow = 'auto';
+function montar(id, lista){
+  const container = document.getElementById(id);
+  lista.forEach(item => {
+    const link = `https://pixeldrain.com/api/file/${item.id}`;
+    container.innerHTML += `
+      <div class="card">
+        <img src="${item.capa}" alt="${item.nome}">
+        <div class="titulo">${item.nome.replace(/filme|serie|anime|-/gi,'').trim()}</div>
+        <div class="overlay"><button class="btn-play" onclick="tocar('${link}')">▶</button></div>
+      </div>
+    `;
+  });
 }
 
-document.addEventListener('keydown', e => { 
-  if(e.key === 'Escape') fechar() 
-})
+function tocar(link){document.getElementById('player').style.display='block';let v=document.getElementById('video');v.src=link;v.play();document.body.style.overflow='hidden';}
+function fechar(){let v=document.getElementById('video');v.pause();v.src='';document.getElementById('player').style.display='none';document.body.style.overflow='auto';}
+
+carregar();
 </script>
-
 </body>
 </html>
