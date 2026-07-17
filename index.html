@@ -1,69 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>HACKERFLIX</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-  body{background:#141414;color:#fff}
-  header{background:#000;padding:15px 4%} header h1{color:#E50914;font-size:28px}
-  .container{padding:20px 4%}
-  .row{margin-bottom:35px}.row h2{font-size:22px;margin-bottom:12px;font-weight:bold}
-  .filmes{display:flex;gap:10px;overflow-x:auto;padding:5px 0}
-  .card{min-width:210px;height:315px;position:relative;border-radius:5px;overflow:hidden;transition:.3s;flex-shrink:0;background:#222}
-  .card:hover{transform:scale(1.08)}
-  .card img{width:100%;height:100%;object-fit:cover}
-  .titulo{position:absolute;bottom:0;width:100%;background:linear-gradient(transparent,rgba(0,0,0,.9));padding:40px 8px 8px;font-size:14px;font-weight:bold}
-  .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.65);display:flex;justify-content:center;align-items:center;opacity:0;transition:.3s}
-  .card:hover .overlay{opacity:1}
-  .btn-play{width:55px;height:55px;background:#fff;border:none;border-radius:50%;font-size:22px;cursor:pointer;font-weight:bold}
-  .btn-play:hover{background:#E50914;color:#fff}
-  #player{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;z-index:999}
-  #player video{width:100%;height:100%}.fechar{position:absolute;top:15px;right:25px;font-size:45px;color:#fff;cursor:pointer;z-index:1000;font-weight:bold}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Vídeo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .video-container {
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #000;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
-<header><h1>HACKERFLIX</h1></header>
+    <h1>Visualizando Vídeo do Pixeldrain</h1>
 
-<div class="container">
-  
-  <div class="row">
-    <h2>Filmes</h2>
-    <div class="filmes">
-      <div class="card">
-        <img src="https://image.tmdb.org/t/p/w500/6FfCk87JOM4hN0X9v4x0Z6sF2tC.jpg" alt="Seu Filme">
-        <div class="titulo">Seu Filme</div>
-        <div class="overlay">
-          <button class="btn-play" onclick="tocar('https://pixeldrain.com/api/file/Gtbg58Bk')">▶</button>
-        </div>
-      </div>
+    <div class="video-container">
+        <video controls autoplay muted playsinline>
+            <source src="https://pixeldrain.com/api/file/Gtbg58Bk" type="video/mp4">
+            Seu navegador não suporta a tag de vídeo do HTML5.
+        </video>
     </div>
-  </div>
-
-</div>
-
-<div id="player">
-  <span class="fechar" onclick="fechar()">×</span>
-  <video id="video" controls autoplay></video>
-</div>
-
-<script>
-function tocar(link){
-  document.getElementById('player').style.display = 'block';
-  let v = document.getElementById('video');
-  v.src = link;
-  v.play();
-  document.body.style.overflow = 'hidden';
-}
-function fechar(){
-  let v = document.getElementById('video');
-  v.pause(); v.src = '';
-  document.getElementById('player').style.display = 'none';
-  document.body.style.overflow = 'auto';
-}
-document.addEventListener('keydown', e => { if(e.key === 'Escape') fechar() })
-</script>
 
 </body>
 </html>
