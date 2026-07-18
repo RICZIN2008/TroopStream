@@ -3,24 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Troop Stream</title>
+<title>HACKERFLIX</title>
 <style>
   :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
   body { background: var(--bg); color: var(--green); }
-  /* TIREI O EFEITO PESADO DE SCANLINE */
   header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
   header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
   nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
-  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; will-change: transform; }
+  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; }
 .container { padding: 15px; width: 100%; margin: auto; }
 .categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
 .categoria.active { display: grid; }
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; contain: layout; } /* contain deixa mais leve */
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; }
 .card:hover { border-color: var(--green); transform: scale(1.03); }
-.card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; loading: lazy; } /* LAZY LOAD */
-.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
+.card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
+.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; } /* impede o texto de bugar o clique */
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
@@ -47,7 +46,7 @@
 </div>
 
 <div id="player">
-  <div id="videoWrapper"><iframe id="video" allowfullscreen allow="autoplay" frameborder="0"></iframe></div>
+  <div id="videoWrapper"><iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0"></iframe></div>
   <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
 </div>
 
@@ -65,24 +64,26 @@
     animes: []
   };
 
-  let videoAtual = ''; // guarda o ID pra não recarregar 2x
-
   function carregarVideos() {
-    const fragment = document.createDocumentFragment(); // monta tudo fora do DOM = mais rápido
     for(let cat in videos){
       const container = document.getElementById(cat);
+      let html = ''; // voltei pra string. Mais compatível
       videos[cat].forEach(v => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.onclick = () => abrirVideo(v.id);
-        card.innerHTML = `
-          <img src="${v.capa}" loading="lazy" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'">
-          <h3>${v.nome}</h3>
+        html += `
+          <div class="card" data-id="${v.id}">
+            <img src="${v.capa}" loading="lazy" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'">
+            <h3>${v.nome}</h3>
+          </div>
         `;
-        fragment.appendChild(card);
       });
-      container.appendChild(fragment.cloneNode(true));
+      container.innerHTML = html;
     }
+    // Adiciona o clique DEPOIS de criar tudo
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', function(){
+        abrirVideo(this.dataset.id);
+      });
+    });
   }
 
   function mostrarCategoria(id, btn) {
@@ -93,20 +94,15 @@
   }
 
   function abrirVideo(fileid) {
-    if(videoAtual === fileid) return; // evita recarregar o mesmo vídeo
-    videoAtual = fileid;
     document.getElementById('player').style.display = 'flex';
-    const iframe = document.getElementById('video');
-    iframe.src = `https://stape.me/e/${fileid}?autoplay=1&popup=false`; // só carrega quando clicar
+    document.getElementById('video').src = `https://stape.me/e/${fileid}`;
   }
 
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
-    document.getElementById('video').src = ''; // mata o iframe e libera RAM
-    videoAtual = '';
+    document.getElementById('video').src = '';
   }
 
-  // Carrega só depois que a página carregar
   window.addEventListener('load', carregarVideos);
 </script>
 
