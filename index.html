@@ -30,7 +30,7 @@
 .btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1001; display: none; }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
-/* TELA DE DETALHES - PRA FILME E SERIE */
+/* TELA DE DETALHES */
 #telaDetalhes { display: none; padding: 20px; max-width: 900px; margin: 0 auto; background: var(--bg); }
 #capaDetalhe { width: 100%; max-height: 450px; object-fit: cover; border: 2px solid var(--green); margin-bottom: 15px; border-radius: 5px; }
 #tituloDetalhe { text-align: center; font-size: 22px; margin-bottom: 15px; text-shadow: 0 0 5px var(--green); }
@@ -38,10 +38,10 @@
 .ep,.btn-assistir { background: var(--card); border: 1px solid #003b00; padding: 14px; cursor: pointer; text-align: center; transition: 0.2s; border-radius: 4px; font-weight: bold; font-size: 16px; }
 .ep:hover,.btn-assistir:hover { background: var(--green); color: #000; border-color: var(--green); }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }
+@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; }
 
-/* CORREÇÃO FULLSCREEN 100% */
+/* FULLSCREEN 100% SEM BORDA */
 #player:fullscreen,
 #player:-webkit-full-screen {
   width: 100vw!important;
@@ -96,15 +96,8 @@
 <div id="player">
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
-    <!-- SANDBOX VOLTOU PRA BLOQUEAR REDIRECIONAMENTO -->
-    <iframe
-      id="video"
-      sandbox="allow-scripts allow-same-origin allow-presentation"
-      allowfullscreen
-      allow="autoplay; fullscreen"
-      frameborder="0"
-      referrerpolicy="no-referrer">
-    </iframe>
+    <!-- SEM SANDBOX PRA NAO DAR CLIENT BLOCKED -->
+    <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
     <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
@@ -112,7 +105,6 @@
 
 <script>
   const videos = {
-    // LISTA COMPLETA DE FILMES
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
@@ -122,8 +114,6 @@
       {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
       {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
-
-    // SERIES
     series: [
       {
         nome: 'MÁQUINA DE GUERRA 2026',
@@ -142,8 +132,6 @@
         ]
       }
     ],
-
-    // ANIMES
     animes: [
       {
         nome: 'Oppenheimer',
@@ -223,14 +211,6 @@
       }
     }, 200);
   }
-
-  // BLOQUEIO DE REDIRECIONAMENTO VOLTOU
-  window.addEventListener('beforeunload', function (e) {
-    if(document.getElementById('player').style.display === 'flex'){
-      e.preventDefault();
-      e.returnValue = '';
-    }
-  });
 
   function toggleFullscreen(){
     const player = document.getElementById('player');
