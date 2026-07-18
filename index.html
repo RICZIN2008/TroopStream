@@ -21,31 +21,32 @@
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
-  #videoWrapper { width: 90%; max-width: 1000px; }
+  #videoWrapper { width: 90%; max-width: 1000px; position: relative; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* SETA VOLTAR - TOPO. SÓ APARECE NO FULL */
+  /* SETA VOLTAR - TOPO ESQUERDO DENTRO DO PLAYER */
 .btn-voltar {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: rgba(0,0,0,0.8);
-  border: 2px solid var(--green);
-  color: var(--green);
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  font-size: 24px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,255,65,0.9);
+  border: none;
+  color: #000;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  font-size: 22px;
+  font-weight: bold;
   cursor: pointer;
   z-index: 1002;
-  display: none;
+  display: none; /* começa escondida */
   align-items: center;
   justify-content: center;
 }
-.btn-voltar:hover { background: var(--green); color: #000; }
+.btn-voltar:hover { background: var(--green); transform: scale(1.1); }
 
-  /* BOTÃO EXPANDIR - DENTRO DO VIDEO */
+  /* BOTÃO EXPANDIR - CANTO INFERIOR DIREITO DENTRO DO PLAYER. NUNCA SOME */
 .btn-expandir {
   position: absolute;
   bottom: 10px;
@@ -64,12 +65,10 @@
 }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
-#videoWrapper { position: relative; }
-
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
 
-/* FULLSCREEN: PLAYER 100% SEM ZOAR */
+/* FULLSCREEN: PLAYER 100% */
 #player:fullscreen #videoWrapper,
 #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; display: flex; align-items: center; justify-content: center; }
 #player:fullscreen iframe,
@@ -93,14 +92,14 @@
 </div>
 
 <div id="player">
-  <!-- SETA VOLTAR - NO TOPO -->
-  <button id="btnVoltar" class="btn-voltar" onclick="voltarHome()">←</button>
-
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- BOTÃO EXPANDIR - DENTRO -->
+    <!-- SETA VOLTAR - TOPO ESQUERDO -->
+    <button id="btnVoltar" class="btn-voltar" onclick="voltarHome()">←</button>
+
+    <!-- BOTÃO EXPANDIR - CANTO INFERIOR DIREITO -->
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
 </div>
@@ -149,8 +148,8 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    document.getElementById('btnExpandir').style.display = 'block'; // só expandir
-    document.getElementById('btnVoltar').style.display = 'none'; // voltar escondido
+    document.getElementById('btnExpandir').style.display = 'block'; // expandir sempre aparece
+    document.getElementById('btnVoltar').style.display = 'flex'; // voltar aparece junto
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -165,19 +164,16 @@
 
   function toggleFullscreen(){
     const player = document.getElementById('player');
-    const btnExpandir = document.getElementById('btnExpandir');
     const btnVoltar = document.getElementById('btnVoltar');
 
     if(!document.fullscreenElement){
-      // 1º CLIQUE - EXPANDE
+      // 1º CLIQUE NO [ ] - EXPANDE
       player.requestFullscreen();
-      btnExpandir.style.display = 'none'; // some expandir
-      btnVoltar.style.display = 'flex'; // aparece voltar no topo
+      btnVoltar.style.display = 'none'; // SÓ A SETA SOME
     } else {
-      // 2º CLIQUE - MINIMIZA
+      // 2º CLIQUE NO [ ] - MINIMIZA
       document.exitFullscreen();
-      btnVoltar.style.display = 'none'; // some voltar
-      btnExpandir.style.display = 'block'; // volta expandir
+      btnVoltar.style.display = 'flex'; // SETA VOLTA
     }
   }
 
