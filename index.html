@@ -20,14 +20,16 @@
 .card:hover { border-color: var(--green); transform: scale(1.03); }
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
+  
+/* PLAYER NORMAL */
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-.btn-voltar { position: absolute; top: 10px; left: 10px; background: rgba(0,255,65,0.9); border: none; color: #000; width: 40px; height: 40px; border-radius: 6px; font-size: 22px; font-weight: bold; cursor: pointer; z-index: 1002; display: none; align-items: center; justify-content: center; }
+.btn-voltar { position: absolute; top: 10px; left: 10px; background: rgba(0,255,65,0.9); border: none; color: #000; width: 40px; height: 40px; border-radius: 6px; font-size: 22px; font-weight: bold; cursor: pointer; z-index: 1003; display: none; align-items: center; justify-content: center; }
 .btn-voltar:hover { background: var(--green); transform: scale(1.1); }
-.btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1001; display: none; }
+.btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1003; display: none; }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
 /* TELA DE DETALHES */
@@ -38,16 +40,17 @@
 .ep,.btn-assistir { background: var(--card); border: 1px solid #003b00; padding: 14px; cursor: pointer; text-align: center; transition: 0.2s; border-radius: 4px; font-weight: bold; font-size: 16px; }
 .ep:hover,.btn-assistir:hover { background: var(--green); color: #000; border-color: var(--green); }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }
-@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; }
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }}
+@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; }}
 
-/* FULLSCREEN 100% SEM BORDA */
+/* FULLSCREEN 100% CORRIGIDO - FORÇA TUDO */
 #player:fullscreen,
 #player:-webkit-full-screen {
   width: 100vw!important;
   height: 100vh!important;
   padding: 0!important;
   margin: 0!important;
+  background: #000!important;
 }
 #player:fullscreen #videoWrapper,
 #player:-webkit-full-screen #videoWrapper {
@@ -96,7 +99,6 @@
 <div id="player">
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
-    <!-- SEM SANDBOX PRA NAO DAR CLIENT BLOCKED -->
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
     <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
@@ -216,7 +218,7 @@
     const player = document.getElementById('player');
     const btnVoltar = document.getElementById('btnVoltar');
     if(!document.fullscreenElement){
-      player.requestFullscreen();
+      player.requestFullscreen().catch(err => {});
       btnVoltar.style.display = 'none';
     } else {
       document.exitFullscreen();
