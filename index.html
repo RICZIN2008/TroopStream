@@ -14,19 +14,17 @@
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; }
 .container { padding: 15px; width: 100%; margin: auto; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; } /* 3 FIXO NO PC */
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
 .categoria.active { display: grid; }
 .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; }
 .card:hover { border-color: var(--green); transform: scale(1.03); }
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 1100px; position: relative; } /* SEU TAMANHO NORMAL */
+  #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
-  /* TIREI O BTN-FECHAR */
 
-  /* BOTÕES NOVOS */
 .btn-voltar {
   position: absolute;
   top: 10px;
@@ -66,24 +64,31 @@
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; }
+@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
 
-/* ARREGLO DO FULLSCREEN: TIRA O LIMITE E FICA 100% */
+/* FULLSCREEN 100% SEM BORDA VERDE */
+#player:fullscreen,
+#player:-webkit-full-screen {
+  width: 100vw!important;
+  height: 100vh!important;
+  padding: 0!important;
+  margin: 0!important;
+}
 #player:fullscreen #videoWrapper,
-#player:-webkit-full-screen #videoWrapper { 
-  width: 100%!important; 
-  max-width: 100%!important; 
-  height: 100%!important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#player:-webkit-full-screen #videoWrapper {
+  width: 100vw!important;
+  max-width: 100vw!important;
+  height: 100vh!important;
+  padding: 0!important;
+  margin: 0!important;
 }
 #player:fullscreen iframe,
-#player:-webkit-full-screen iframe { 
-  width: 100%!important; 
-  height: 100%!important; 
-  border: none!important;
+#player:-webkit-full-screen iframe {
+  width: 100vw!important;
+  height: 100vh!important;
+  border: none!important; /* TIREI A BORDA VERDE */
   aspect-ratio: unset!important;
+  object-fit: cover;
 }
 </style>
 </head>
@@ -108,11 +113,9 @@
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- BOTÕES DENTRO DO PLAYER -->
     <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
-  <!-- TIREI O BOTÃO [X] FECHAR DAQUI -->
 </div>
 
 <script>
@@ -178,10 +181,10 @@
     const btnVoltar = document.getElementById('btnVoltar');
 
     if(!document.fullscreenElement){
-      player.requestFullscreen(); // EXPANDE 100%
+      player.requestFullscreen();
       btnVoltar.style.display = 'none';
     } else {
-      document.exitFullscreen(); // MINIMIZA
+      document.exitFullscreen();
       btnVoltar.style.display = 'flex';
     }
   }
