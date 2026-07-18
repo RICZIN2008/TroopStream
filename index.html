@@ -8,40 +8,34 @@
   :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
   body { background: var(--bg); color: var(--green); }
-  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
+  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; }
   header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
-  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
+  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); }
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; }
-.container { padding: 15px; width: 100%; max-width: 1400px; margin: auto; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
+.container { padding: 15px; max-width: 1400px; margin: auto; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; }
 .categoria.active { display: grid; }
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
-.card:hover { border-color: var(--green); transform: scale(1.03); }
-.card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: #000; display: block; }
-.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; }
+.card:hover { border-color: var(--green); }
+.card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+.card h3 { padding: 10px; font-size: 13px; text-align: center; background: #000; }
 
-  /* PLAYER NOVO */
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 1100px; position: relative; background: #000; }
-  iframe { width: 100%; aspect-ratio: 16/9; max-height: 90vh; background: #000; border: 2px solid var(--green); display: block; }
-.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; z-index: 2; }
+  /* PLAYER PRÓPRIO */
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+  #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
+  video { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; }
 
-  /* BARRA DE CONTROLES ESTILO YT */
-.controls { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 10px; display: flex; align-items: center; gap: 15px; opacity: 0; transition: opacity 0.3s; }
-#videoWrapper:hover.controls { opacity: 1; } /* aparece ao passar mouse */
-.control-btn { background: none; border: none; color: var(--green); font-size: 20px; cursor: pointer; font-weight: bold; }
-.control-btn:hover { text-shadow: 0 0 8px var(--green); }
-.progress { flex: 1; height: 4px; background: #333; cursor: pointer; position: relative; }
-.progress-bar { height: 100%; width: 0%; background: var(--green); }
+  /* CONTROLES YT */
+ .controls { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.9)); padding: 10px; display: flex; align-items: center; gap: 10px; opacity: 0; transition: 0.3s; }
+  #videoWrapper:hover.controls { opacity: 1; }
+ .btn { background: none; border: none; color: var(--green); font-size: 20px; cursor: pointer; }
+ .progress { flex: 1; height: 5px; background: #444; cursor: pointer; }
+ .progress-bar { height: 100%; width: 0%; background: var(--green); }
+ .tempo { font-size: 12px; }
 
-  /* FULLSCREEN */
-  #player:fullscreen #videoWrapper,
-  #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: none!important; height: 100%!important; }
-  #player:fullscreen iframe,
-  #player:-webkit-full-screen iframe { height: 100%!important; max-height: none!important; border: none!important; }
-  #player:fullscreen.controls,
-  #player:-webkit-full-screen.controls { padding: 20px; }
+  #player:fullscreen #videoWrapper { width: 100%; height: 100%; max-width: none; }
+  #player:fullscreen video { height: 100%; border: none; }
 </style>
 </head>
 <body>
@@ -62,16 +56,14 @@
 
 <div id="player">
   <div id="videoWrapper">
-    <div class="loading" id="loading">CARREGANDO...</div>
-    <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
-
-    <!-- BARRA DE CONTROLES CUSTOM -->
+    <video id="video" playsinline></video>
     <div class="controls" id="controls">
-      <button class="control-btn" onclick="toggleFullscreen()">[ ]</button>
-      <div class="progress" onclick="alert('Barra de progresso fake pq stape não libera')">
-        <div class="progress-bar"></div>
-      </div>
-      <button class="control-btn" onclick="fecharVideo()">[X]</button>
+      <button class="btn" id="playBtn">▶</button>
+      <div class="progress" id="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <span class="tempo" id="tempo">00:00 / 00:00</span>
+      <button class="btn" id="volBtn">🔊</button>
+      <button class="btn" id="fullBtn">[ ]</button>
+      <button class="btn" id="closeBtn">✕</button>
     </div>
   </div>
 </div>
@@ -81,25 +73,19 @@
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
-      {id: '3xdbv6m1lWuddxV', nome: 'Super Mario Galaxy', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/smg-home-header-mobile.png'},
-      {id: 'g9gWA61gm3sqD8q', nome: 'Homem-Aranha', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/hhRD5m-w4L7Gje7FgahvaeKS5NLEYJVDSQsmbNqvmi-L51PlpyVJnGr6M3siA5LIn9r4ry0wVQsBHxRJXAc.png'},
-      {id: 'lkMMBoqZlgc7YX6', nome: 'Michael', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0002.jpg'},
-      {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/IMagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
-      {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
-    ],
-    series: [],
-    animes: []
+    ]
   };
 
-  let carregando = false;
   const player = document.getElementById('player');
+  const video = document.getElementById('video');
 
   function carregarVideos() {
     for(let cat in videos){
       const container = document.getElementById(cat);
       let html = '';
       videos[cat].forEach(v => {
-        html += `<div class="card" data-id="${v.id}"><img src="${v.capa}" loading="lazy" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'"><h3>${v.nome}</h3></div>`;
+        // ATENÇÃO: stape não dá mp4 direto. Isso aqui não vai rodar
+        html += `<div class="card" data-id="${v.id}"><img src="${v.capa}"><h3>${v.nome}</h3></div>`;
       });
       container.innerHTML = html;
     }
@@ -108,6 +94,27 @@
     });
   }
 
+  function abrirVideo(fileid) {
+    player.style.display = 'flex';
+    // AQUI QUE ESTÁ O PROBLEMA: Precisamos do.mp4
+    // stape.me/e/ID não é mp4. É página.
+    // video.src = `https://stape.me/d/${fileid}.mp4`; // ISSO NÃO FUNCIONA
+    video.src = `https://stape.me/e/${fileid}`; // vai dar erro
+    video.play();
+  }
+
+  // CONTROLES
+  document.getElementById('playBtn').onclick = () => video.paused? video.play() : video.pause();
+  document.getElementById('fullBtn').onclick = () => player.requestFullscreen();
+  document.getElementById('closeBtn').onclick = () => { player.style.display='none'; video.src=''; }
+  video.onplay = () => playBtn.textContent = '⏸';
+  video.onpause = () => playBtn.textContent = '▶';
+  video.ontimeupdate = () => {
+    progressBar.style.width = (video.currentTime / video.duration) * 100 + '%';
+    tempo.textContent = `${format(video.currentTime)} / ${format(video.duration)}`;
+  }
+  function format(s){ return new Date(s*1000).toISOString().substr(14,5) }
+
   function mostrarCategoria(id, btn) {
     document.querySelectorAll('.categoria').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -115,42 +122,7 @@
     btn.classList.add('active');
   }
 
-  function abrirVideo(fileid) {
-    if(carregando) return;
-    carregando = true;
-    player.style.display = 'flex';
-    document.getElementById('loading').style.display = 'block';
-    const iframe = document.getElementById('video');
-    iframe.src = '';
-    setTimeout(() => {
-      iframe.src = `https://stape.me/e/${fileid}`;
-      iframe.onload = () => {
-        document.getElementById('loading').style.display = 'none';
-        carregando = false;
-      }
-    }, 200);
-  }
-
-  function toggleFullscreen(){
-    if(!document.fullscreenElement){
-      player.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  }
-
-  function fecharVideo() {
-    if(document.exitFullscreen) document.exitFullscreen();
-    player.style.display = 'none';
-    document.getElementById('video').src = '';
-    carregando = false;
-  }
-
-  // ESC fecha
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
-
   window.addEventListener('load', carregarVideos);
 </script>
-
 </body>
 </html>
