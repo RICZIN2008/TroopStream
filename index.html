@@ -25,10 +25,27 @@
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* BARRA DE BOTÕES NOVA */
-.controls { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-.btn-control { background: var(--card); color: var(--green); border: 1px solid var(--green); padding: 8px 14px; cursor: pointer; font-weight: bold; border-radius: 4px; font-size: 12px; transition: 0.2s; }
-.btn-control:hover { background: var(--green); color: #000; }
+  /* BOTÃO POR CIMA DO PLAYER */
+.btn-expandir-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,255,65,0.9);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001; /* fica por cima do iframe */
+  display: none;
+}
+.btn-expandir-overlay:hover { background: var(--green); transform: scale(1.1); }
+  #player:fullscreen.btn-expandir-overlay { display: none; } /* some no full */
+
+.btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
@@ -44,7 +61,6 @@
 #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; }
 #player:fullscreen iframe,
 #player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
-#player:fullscreen.controls { display: none; } /* some os botões no full */
 </style>
 </head>
 <body>
@@ -67,16 +83,11 @@
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
-  </div>
 
-  <!-- BARRA DE BOTÕES -->
-  <div class="controls" id="controls">
-    <button class="btn-control" onclick="toggleFullscreen()">[ ] EXPANDIR</button>
-    <button class="btn-control" onclick="pular(-10)">« 10s</button>
-    <button class="btn-control" onclick="pular(10)">10s »</button>
-    <button class="btn-control" onclick="acelerar()">2x »</button>
-    <button class="btn-control" onclick="fecharVideo()">[X] SAIR</button>
+    <!-- BOTÃO QUE FICA POR CIMA -->
+    <button class="btn-expandir-overlay" onclick="toggleFullscreen()">[ ]</button>
   </div>
+  <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
 </div>
 
 <script>
@@ -95,7 +106,6 @@
   };
 
   let carregando = false;
-  let velocidade = 1;
 
   function carregarVideos() {
     for(let cat in videos){
@@ -132,6 +142,7 @@
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
+        document.querySelector('.btn-expandir-overlay').style.display = 'block'; // mostra o botão
       }
     }, 200);
   }
@@ -144,24 +155,14 @@
     }
   }
 
-  function pular(seg){
-    alert(`Pular ${seg}s - Só funciona com player próprio.mp4`);
-  }
-
-  function acelerar(){
-    velocidade = velocidade === 1? 2 : 1;
-    alert(`Velocidade: ${velocidade}x - Só funciona com player próprio.mp4`);
-  }
-
   function fecharVideo() {
     if(document.exitFullscreen) document.exitFullscreen();
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
+    document.querySelector('.btn-expandir-overlay').style.display = 'none';
     carregando = false;
   }
-
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
