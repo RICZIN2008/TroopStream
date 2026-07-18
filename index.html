@@ -25,31 +25,31 @@
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* SETA 1: VOLTAR PRA HOME - TOPO */
-.btn-home-topo {
+  /* SETA VOLTAR - SÓ APARECE NO FULLSCREEN */
+.btn-voltar {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: transparent;
+  background: rgba(0,0,0,0.7);
   border: 2px solid var(--green);
   color: var(--green);
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
   z-index: 1002;
   display: none;
   align-items: center;
   justify-content: center;
 }
-.btn-home-topo:hover { background: var(--green); color: #000; }
+.btn-voltar:hover { background: var(--green); color: #000; }
 
-  /* SETA 2: EXPANDIR/MINIMIZAR - DENTRO DO VIDEO. MESMA FUNÇÃO DO [ ] */
-.btn-expandir-video {
+  /* BOTÃO EXPANDIR - SÓ APARECE NO MODO NORMAL */
+.btn-expandir {
   position: absolute;
   bottom: 8px;
-  right: 8px; /* mesmo lugar do [ ] */
+  right: 8px;
   width: 40px;
   height: 40px;
   background: rgba(0,255,65,0.9);
@@ -62,28 +62,7 @@
   z-index: 1001;
   display: none;
 }
-.btn-expandir-video:hover { background: var(--green); transform: scale(1.1); }
-
-/* Muda o ícone quando está em fullscreen */
-#player:fullscreen.btn-expandir-video { content: "↩"; }
-
-.btn-expandir-overlay {
-  position: absolute;
-  bottom: 8px;
-  right: 50px; /* deixei um do lado do outro */
-  width: 40px;
-  height: 40px;
-  background: rgba(0,255,65,0.9);
-  border: none;
-  border-radius: 6px;
-  color: #000;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1001;
-  display: none;
-}
-.btn-expandir-overlay:hover { background: var(--green); transform: scale(1.1); }
+.btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
@@ -99,6 +78,10 @@
 #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; }
 #player:fullscreen iframe,
 #player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
+
+/* CONTROLE DE EXIBIÇÃO */
+#player:fullscreen.btn-expandir { display: none!important; }
+#player:fullscreen.btn-voltar { display: flex!important; }
 </style>
 </head>
 <body>
@@ -118,18 +101,15 @@
 </div>
 
 <div id="player">
-  <!-- SETA 1: VOLTAR PRA HOME -->
-  <button class="btn-home-topo" onclick="voltarHome()">←</button>
+  <!-- SETA VOLTAR - TOPO. SÓ APARECE NO FULL -->
+  <button class="btn-voltar" onclick="voltarHome()">←</button>
 
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- SETA 2: EXPANDIR/MINIMIZAR - MESMA FUNÇÃO DO [ ] -->
-    <button class="btn-expandir-video" onclick="toggleFullscreen()">⤢</button>
-
-    <!-- BOTÃO EXPANDIR NORMAL -->
-    <button class="btn-expandir-overlay" onclick="toggleFullscreen()">[ ]</button>
+    <!-- BOTÃO EXPANDIR - DENTRO DO VIDEO. SÓ APARECE NO NORMAL -->
+    <button class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
 </div>
 
@@ -177,9 +157,7 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    document.querySelector('.btn-home-topo').style.display = 'flex';
-    document.querySelector('.btn-expandir-overlay').style.display = 'block';
-    document.querySelector('.btn-expandir-video').style.display = 'block'; /* mostra a seta dentro do video */
+    document.querySelector('.btn-expandir').style.display = 'block'; /* só expandir aparece */
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -205,9 +183,6 @@
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
-    document.querySelector('.btn-home-topo').style.display = 'none';
-    document.querySelector('.btn-expandir-overlay').style.display = 'none';
-    document.querySelector('.btn-expandir-video').style.display = 'none';
     carregando = false;
   }
 
