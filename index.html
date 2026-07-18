@@ -40,6 +40,34 @@
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
+
+/* CORREÇÃO FULLSCREEN 100% */
+#player:fullscreen,
+#player:-webkit-full-screen {
+  width: 100vw!important;
+  height: 100vh!important;
+  padding: 0!important;
+  margin: 0!important;
+}
+#player:fullscreen #videoWrapper,
+#player:-webkit-full-screen #videoWrapper {
+  width: 100vw!important;
+  height: 100vh!important;
+  max-width: 100vw!important;
+  padding: 0!important;
+  margin: 0!important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#player:fullscreen iframe,
+#player:-webkit-full-screen iframe {
+  width: 100vw!important;
+  height: 100vh!important;
+  border: none!important;
+  aspect-ratio: unset!important;
+  object-fit: fill!important;
+}
 </style>
 </head>
 <body>
@@ -68,7 +96,15 @@
 <div id="player">
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
-    <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
+    <!-- SANDBOX VOLTOU PRA BLOQUEAR REDIRECIONAMENTO -->
+    <iframe
+      id="video"
+      sandbox="allow-scripts allow-same-origin allow-presentation"
+      allowfullscreen
+      allow="autoplay; fullscreen"
+      frameborder="0"
+      referrerpolicy="no-referrer">
+    </iframe>
     <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
@@ -76,7 +112,7 @@
 
 <script>
   const videos = {
-    // LISTA COMPLETA DE FILMES VOLTOU
+    // LISTA COMPLETA DE FILMES
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
@@ -87,14 +123,14 @@
       {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
 
-    // SERIES: Peguei 2 filmes como exemplo. Só editar e adicionar eps
+    // SERIES
     series: [
       {
         nome: 'MÁQUINA DE GUERRA 2026',
         capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png',
         episodios: [
           {id: 'V6VPMJ77vgSKr7z', nome: 'Episódio 1'},
-          {id: '0BQKmpzWWbHb972', nome: 'Episódio 2'} // Duplica pra mais eps
+          {id: '0BQKmpzWWbHb972', nome: 'Episódio 2'}
         ]
       },
       {
@@ -107,7 +143,7 @@
       }
     ],
 
-    // ANIMES: Peguei 2 filmes como exemplo também
+    // ANIMES
     animes: [
       {
         nome: 'Oppenheimer',
@@ -187,6 +223,14 @@
       }
     }, 200);
   }
+
+  // BLOQUEIO DE REDIRECIONAMENTO VOLTOU
+  window.addEventListener('beforeunload', function (e) {
+    if(document.getElementById('player').style.display === 'flex'){
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 
   function toggleFullscreen(){
     const player = document.getElementById('player');
