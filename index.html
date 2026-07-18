@@ -49,7 +49,7 @@
 .btn-minimizar {
   position: absolute;
   bottom: 8px;
-  right: 8px;
+  right: 45px; /* do lado do expandir */
   width: 40px;
   height: 40px;
   background: rgba(0,255,65,0.9);
@@ -63,7 +63,27 @@
   display: none;
 }
 .btn-minimizar:hover { background: var(--green); transform: scale(1.1); }
-#player:fullscreen.btn-minimizar { display: block!important; } /* só aparece no full */
+#player:fullscreen.btn-minimizar { display: block!important; }
+
+  /* BOTÃO EXPANDIR - VOLTOU */
+.btn-expandir-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,255,65,0.9);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+  display: none;
+}
+.btn-expandir-overlay:hover { background: var(--green); transform: scale(1.1); }
+#player:fullscreen.btn-expandir-overlay { display: none!important; } /* some no full */
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
@@ -105,8 +125,11 @@
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- SETA 2: MINIMIZAR - SÓ APARECE NO FULLSCREEN -->
+    <!-- SETA 2: MINIMIZAR -->
     <button class="btn-minimizar" onclick="minimizarVideo()">↩</button>
+
+    <!-- BOTÃO EXPANDIR - VOLTOU -->
+    <button class="btn-expandir-overlay" onclick="toggleFullscreen()">[ ]</button>
   </div>
 </div>
 
@@ -155,6 +178,7 @@
     carregando = true;
     document.getElementById('player').style.display = 'flex';
     document.querySelector('.btn-home-topo').style.display = 'flex';
+    document.querySelector('.btn-expandir-overlay').style.display = 'block';
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -167,18 +191,27 @@
     }, 200);
   }
 
+  function toggleFullscreen(){
+    if(!document.fullscreenElement){
+      document.getElementById('player').requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
   function minimizarVideo() {
-    // SÓ SAI DO FULLSCREEN, NÃO FECHA O VIDEO
+    // SÓ SAI DO FULLSCREEN
     if(document.exitFullscreen) document.exitFullscreen();
   }
 
   function voltarHome() {
-    // FECHA TUDO E VOLTA PRA LISTA
+    // FECHA TUDO
     if(document.exitFullscreen) document.exitFullscreen();
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
     document.querySelector('.btn-home-topo').style.display = 'none';
+    document.querySelector('.btn-expandir-overlay').style.display = 'none';
     carregando = false;
   }
 
