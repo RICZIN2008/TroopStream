@@ -25,32 +25,10 @@
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* SETA VOLTAR - FICA NO LUGAR DO EXPANDIR */
-.btn-voltar {
+  /* OS 2 BOTÕES */
+.btn-controle {
   position: absolute;
   bottom: 8px;
-  right: 8px;
-  width: 40px;
-  height: 40px;
-  background: rgba(0,255,65,0.9);
-  border: none;
-  border-radius: 6px;
-  color: #000;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1001;
-  display: none; /* começa escondida */
-  align-items: center;
-  justify-content: center;
-}
-.btn-voltar:hover { background: var(--green); transform: scale(1.1); }
-
-  /* BOTÃO EXPANDIR */
-.btn-expandir {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
   width: 40px;
   height: 40px;
   background: rgba(0,255,65,0.9);
@@ -62,10 +40,15 @@
   cursor: pointer;
   z-index: 1001;
   display: none;
+  align-items: center;
+  justify-content: center;
 }
-.btn-expandir:hover { background: var(--green); transform: scale(1.1); }
+.btn-controle:hover { background: var(--green); transform: scale(1.1); }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
+#btnExpandir { right: 8px; } 
+#btnVoltar { right: 55px; }
+
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
 
 /* PLAYER MENOR DEITADO */
@@ -79,10 +62,6 @@
 #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; }
 #player:fullscreen iframe,
 #player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
-
-/* REGRA: NO FULLSCREEN ESCONDE EXPANDIR E MOSTRA SETA */
-#player:fullscreen.btn-expandir { display: none!important; }
-#player:fullscreen.btn-voltar { display: flex!important; }
 </style>
 </head>
 <body>
@@ -106,11 +85,9 @@
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- BOTÃO EXPANDIR -->
-    <button class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
-
-    <!-- SETA VOLTAR - MESMO LUGAR -->
-    <button class="btn-voltar" onclick="toggleFullscreen()">←</button>
+    <!-- OS 2 BOTÕES -->
+    <button id="btnVoltar" class="btn-controle" onclick="voltarHome()">←</button>
+    <button id="btnExpandir" class="btn-controle" onclick="toggleFullscreen()">[ ]</button>
   </div>
 </div>
 
@@ -158,7 +135,9 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    document.querySelector('.btn-expandir').style.display = 'block'; /* só expandir aparece */
+    // OS 2 APARECE JUNTOS NO INICIO
+    document.getElementById('btnExpandir').style.display = 'flex';
+    document.getElementById('btnVoltar').style.display = 'flex';
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -172,18 +151,32 @@
   }
 
   function toggleFullscreen(){
+    const player = document.getElementById('player');
+    const btnExpandir = document.getElementById('btnExpandir');
+    const btnVoltar = document.getElementById('btnVoltar');
+
     if(!document.fullscreenElement){
-      document.getElementById('player').requestFullscreen();
+      // 1º CLIQUE NO [ ] - EXPANDE
+      player.requestFullscreen();
+      btnVoltar.style.display = 'none'; // some o <-
+      // [ ] continua aparecendo
     } else {
+      // 2º CLIQUE NO [ ] - MINIMIZA
       document.exitFullscreen();
+      btnVoltar.style.display = 'flex'; // volta o <-
+      // [ ] continua aparecendo
     }
   }
 
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') {
+  function voltarHome() {
     if(document.exitFullscreen) document.exitFullscreen();
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
-  }});
+    document.getElementById('loading').style.display = 'none';
+    carregando = false;
+  }
+
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') voltarHome(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
