@@ -40,8 +40,6 @@
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
-
-#player:fullscreen iframe { width: 100vw!important; height: 100vh!important; border: none!important; aspect-ratio: unset!important; object-fit: cover; }
 </style>
 </head>
 <body>
@@ -61,7 +59,7 @@
 
   <div id="telaEpisodios">
     <button onclick="voltarCategorias()" style="background:var(--green);color:#000;border:none;padding:8px 15px;margin-bottom:15px;cursor:pointer;border-radius:4px;">← VOLTAR</button>
-    <h2 id="tituloSerie" style="margin-bottom:10px;"></h2>
+    <h2 id="tituloSerie" style="margin-bottom:10px;text-align:center;"></h2>
     <img id="capaSerie" src="">
     <div id="listaEpisodios"></div>
   </div>
@@ -78,15 +76,10 @@
 
 <script>
   const videos = {
-    // FILMES = IGUAL. Clica e já abre
+    // FILMES = Clica e já abre o vídeo
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
-      {id: '3xdbv6m1lWuddxV', nome: 'Super Mario Galaxy', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/smg-home-header-mobile.png'},
-      {id: 'g9gWA61gm3sqD8q', nome: 'Homem-Aranha', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/hhRD5m-w4L7Gje7FgahvaeKS5NLEYJVDSQsmbNqvmi-L51PlpyVJnGr6M3siA5LIn9r4ry0wVQsBHxRJXAc.png'},
-      {id: 'lkMMBoqZlgc7YX6', nome: 'Michael', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0002.jpg'},
-      {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
-      {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
 
     // SERIES = Clica na capa > abre lista de Episodios
@@ -95,17 +88,9 @@
         nome: 'STRANGER THINGS',
         capa: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg',
         episodios: [
-          {id: 'OxrqvvY7K9i6Me', nome: 'Episódio 1 - O Desaparecimento'},
+          {id: 'OxrqvvY7K9i6Me', nome: 'Episódio 1'},
           {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
           {id: 'COLA_ID_EP3_AQUI', nome: 'Episódio 3'},
-        ]
-      },
-      {
-        nome: 'THE WITCHER',
-        capa: 'https://image.tmdb.org/t/p/w500/zrPpUdoFd0sV9y4ZJ8oT5rT8Jp3.jpg',
-        episodios: [
-          {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1'},
-          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
         ]
       }
     ],
@@ -116,14 +101,6 @@
         nome: 'DEMON SLAYER',
         capa: 'https://image.tmdb.org/t/p/w500/aLQeVCt5ih9jwY5Eex6jKcVJmN5.jpg',
         episodios: [
-          {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1 - Crueldade'},
-          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
-        ]
-      },
-      {
-        nome: 'ONE PIECE',
-        capa: 'https://image.tmdb.org/t/p/w500/cMD9Ygz11zjJzAovURpO9eTS4oE.jpg',
-        episodios: [
           {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1'},
           {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
         ]
@@ -132,8 +109,6 @@
   };
 
   let carregando = false;
-  let episodioAtual = 0;
-  let listaEpisodiosAtual = [];
 
   function carregarVideos() {
     for(let cat in videos){
@@ -154,6 +129,7 @@
     document.querySelectorAll('.categoria').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById('telaEpisodios').style.display = 'none';
+    document.getElementById('player').style.display = 'none'; // Fecha player ao trocar aba
     document.querySelector('.container').style.display = 'block';
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
@@ -166,25 +142,15 @@
     document.getElementById('tituloSerie').innerText = serie.nome;
     document.getElementById('capaSerie').src = serie.capa;
 
-    listaEpisodiosAtual = serie.episodios;
-    episodioAtual = 0;
-
     let html = '';
     serie.episodios.forEach((ep, i) => {
-      html += `<div class="ep" id="ep-${i}" onclick="tocarEpisodio(${i})">${ep.nome}</div>`;
+      html += `<div class="ep" onclick="abrirVideo('${ep.id}')">${ep.nome}</div>`;
     });
     document.getElementById('listaEpisodios').innerHTML = html;
   }
 
-  function tocarEpisodio(index) {
-    episodioAtual = index;
-    document.querySelectorAll('.ep').forEach(e => e.classList.remove('active'));
-    document.getElementById(`ep-${index}`).classList.add('active');
-    abrirVideo(listaEpisodiosAtual[index].id, true);
-  }
-
-  function abrirVideo(fileid, isSerie = false) {
-    if(carregando) return;
+  function abrirVideo(fileid) {
+    if(carregando ||!fileid || fileid.includes('COLA_ID')) return; // Bloqueia se não tiver ID
     carregando = true;
     document.getElementById('player').style.display = 'flex';
     document.getElementById('btnExpandir').style.display = 'block';
