@@ -13,24 +13,35 @@
   nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; }
-.container { padding: 15px; width: 100%; max-width: 1400px; margin: auto; } /* ADD max-width */
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; } /* 3 FIXO SEMPRE */
+.container { padding: 15px; width: 100%; max-width: 1400px; margin: auto; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
 .categoria.active { display: grid; }
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; }
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
 .card:hover { border-color: var(--green); transform: scale(1.03); }
-.card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: #000; display: block; } /* TROQUEI height por aspect-ratio */
-.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 1100px; max-height: 90vh; position: relative; } /* ADD max-height */
-  iframe { width: 100%; aspect-ratio: 16/9; max-height: 90vh; background: #000; border: 2px solid var(--green); } /* ADD max-height */
-.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
-.btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
+.card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: #000; display: block; }
+.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
 
-/* ESCONDE BOTÃO FECHAR NO FULLSCREEN */
-#player:fullscreen.btn-fechar,
-#player:-webkit-full-screen.btn-fechar { display: none; }
+  /* PLAYER NOVO */
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { width: 95%; max-width: 1100px; position: relative; background: #000; }
+  iframe { width: 100%; aspect-ratio: 16/9; max-height: 90vh; background: #000; border: 2px solid var(--green); display: block; }
+.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; z-index: 2; }
 
-/* REMOVI OS 2 MEDIA QUE FORÇAVAM 2 COLUNAS */
+  /* BARRA DE CONTROLES ESTILO YT */
+.controls { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 10px; display: flex; align-items: center; gap: 15px; opacity: 0; transition: opacity 0.3s; }
+#videoWrapper:hover.controls { opacity: 1; } /* aparece ao passar mouse */
+.control-btn { background: none; border: none; color: var(--green); font-size: 20px; cursor: pointer; font-weight: bold; }
+.control-btn:hover { text-shadow: 0 0 8px var(--green); }
+.progress { flex: 1; height: 4px; background: #333; cursor: pointer; position: relative; }
+.progress-bar { height: 100%; width: 0%; background: var(--green); }
+
+  /* FULLSCREEN */
+  #player:fullscreen #videoWrapper,
+  #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: none!important; height: 100%!important; }
+  #player:fullscreen iframe,
+  #player:-webkit-full-screen iframe { height: 100%!important; max-height: none!important; border: none!important; }
+  #player:fullscreen.controls,
+  #player:-webkit-full-screen.controls { padding: 20px; }
 </style>
 </head>
 <body>
@@ -53,8 +64,16 @@
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
+
+    <!-- BARRA DE CONTROLES CUSTOM -->
+    <div class="controls" id="controls">
+      <button class="control-btn" onclick="toggleFullscreen()">[ ]</button>
+      <div class="progress" onclick="alert('Barra de progresso fake pq stape não libera')">
+        <div class="progress-bar"></div>
+      </div>
+      <button class="control-btn" onclick="fecharVideo()">[X]</button>
+    </div>
   </div>
-  <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
 </div>
 
 <script>
@@ -65,7 +84,7 @@
       {id: '3xdbv6m1lWuddxV', nome: 'Super Mario Galaxy', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/smg-home-header-mobile.png'},
       {id: 'g9gWA61gm3sqD8q', nome: 'Homem-Aranha', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/hhRD5m-w4L7Gje7FgahvaeKS5NLEYJVDSQsmbNqvmi-L51PlpyVJnGr6M3siA5LIn9r4ry0wVQsBHxRJXAc.png'},
       {id: 'lkMMBoqZlgc7YX6', nome: 'Michael', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0002.jpg'},
-      {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
+      {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/IMagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
       {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
     series: [],
@@ -73,6 +92,7 @@
   };
 
   let carregando = false;
+  const player = document.getElementById('player');
 
   function carregarVideos() {
     for(let cat in videos){
@@ -84,9 +104,7 @@
       container.innerHTML = html;
     }
     document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', function(){
-        abrirVideo(this.dataset.id);
-      });
+      card.addEventListener('click', function(){ abrirVideo(this.dataset.id); });
     });
   }
 
@@ -100,7 +118,7 @@
   function abrirVideo(fileid) {
     if(carregando) return;
     carregando = true;
-    document.getElementById('player').style.display = 'flex';
+    player.style.display = 'flex';
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -113,12 +131,23 @@
     }, 200);
   }
 
+  function toggleFullscreen(){
+    if(!document.fullscreenElement){
+      player.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
   function fecharVideo() {
-    document.getElementById('player').style.display = 'none';
+    if(document.exitFullscreen) document.exitFullscreen();
+    player.style.display = 'none';
     document.getElementById('video').src = '';
-    document.getElementById('loading').style.display = 'none';
     carregando = false;
   }
+
+  // ESC fecha
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
