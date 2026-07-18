@@ -20,15 +20,36 @@
 .card:hover { border-color: var(--green); transform: scale(1.03); }
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
+  #videoWrapper { width: 90%; max-width: 1000px; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* OS 2 BOTÕES */
-.btn-controle {
+  /* SETA VOLTAR - TOPO. SÓ APARECE NO FULL */
+.btn-voltar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0,0,0,0.8);
+  border: 2px solid var(--green);
+  color: var(--green);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1002;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.btn-voltar:hover { background: var(--green); color: #000; }
+
+  /* BOTÃO EXPANDIR - DENTRO DO VIDEO */
+.btn-expandir {
   position: absolute;
-  bottom: 8px;
+  bottom: 10px;
+  right: 10px;
   width: 40px;
   height: 40px;
   background: rgba(0,255,65,0.9);
@@ -40,28 +61,19 @@
   cursor: pointer;
   z-index: 1001;
   display: none;
-  align-items: center;
-  justify-content: center;
 }
-.btn-controle:hover { background: var(--green); transform: scale(1.1); }
+.btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
-#btnExpandir { right: 8px; } 
-#btnVoltar { right: 55px; }
+#videoWrapper { position: relative; }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
 
-/* PLAYER MENOR DEITADO */
-@media (orientation: landscape) and (max-height: 500px){
-  #player:not(:fullscreen) #videoWrapper { max-width: 70%!important; }
-  #player:not(:fullscreen) iframe { max-height: 80vh!important; }
-}
-
-/* FULLSCREEN: PLAYER 100% */
+/* FULLSCREEN: PLAYER 100% SEM ZOAR */
 #player:fullscreen #videoWrapper,
-#player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; }
+#player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; display: flex; align-items: center; justify-content: center; }
 #player:fullscreen iframe,
-#player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
+#player:-webkit-full-screen iframe { width: 100%!important; height: 100%!important; border: none!important; }
 </style>
 </head>
 <body>
@@ -81,13 +93,15 @@
 </div>
 
 <div id="player">
+  <!-- SETA VOLTAR - NO TOPO -->
+  <button id="btnVoltar" class="btn-voltar" onclick="voltarHome()">←</button>
+
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- OS 2 BOTÕES -->
-    <button id="btnVoltar" class="btn-controle" onclick="voltarHome()">←</button>
-    <button id="btnExpandir" class="btn-controle" onclick="toggleFullscreen()">[ ]</button>
+    <!-- BOTÃO EXPANDIR - DENTRO -->
+    <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
 </div>
 
@@ -135,9 +149,8 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    // OS 2 APARECE JUNTOS NO INICIO
-    document.getElementById('btnExpandir').style.display = 'flex';
-    document.getElementById('btnVoltar').style.display = 'flex';
+    document.getElementById('btnExpandir').style.display = 'block'; // só expandir
+    document.getElementById('btnVoltar').style.display = 'none'; // voltar escondido
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -156,15 +169,15 @@
     const btnVoltar = document.getElementById('btnVoltar');
 
     if(!document.fullscreenElement){
-      // 1º CLIQUE NO [ ] - EXPANDE
+      // 1º CLIQUE - EXPANDE
       player.requestFullscreen();
-      btnVoltar.style.display = 'none'; // some o <-
-      // [ ] continua aparecendo
+      btnExpandir.style.display = 'none'; // some expandir
+      btnVoltar.style.display = 'flex'; // aparece voltar no topo
     } else {
-      // 2º CLIQUE NO [ ] - MINIMIZA
+      // 2º CLIQUE - MINIMIZA
       document.exitFullscreen();
-      btnVoltar.style.display = 'flex'; // volta o <-
-      // [ ] continua aparecendo
+      btnVoltar.style.display = 'none'; // some voltar
+      btnExpandir.style.display = 'block'; // volta expandir
     }
   }
 
