@@ -14,20 +14,19 @@
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; }
 .container { padding: 15px; width: 100%; margin: auto; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; } /* 3 FIXO NO PC */
 .categoria.active { display: grid; }
 .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; }
 .card:hover { border-color: var(--green); transform: scale(1.03); }
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
-
-  /* PLAYER VOLTOU PRO FORMATO ORIGINAL */
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; }
-  #videoWrapper { width: 90%; max-width: 900px; position: relative; }
-  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); border-radius: 5px; }
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { width: 95%; max-width: 1100px; position: relative; } /* SEU TAMANHO ORIGINAL */
+  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
+.btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
 
-  /* SETA VOLTAR - TOPO ESQUERDO DENTRO DO PLAYER */
+  /* BOTÕES NOVOS - SÓ ADICIONEI ISSO */
 .btn-voltar {
   position: absolute;
   top: 10px;
@@ -48,7 +47,6 @@
 }
 .btn-voltar:hover { background: var(--green); transform: scale(1.1); }
 
-  /* BOTÃO EXPANDIR - CANTO INFERIOR DIREITO. NUNCA SOME */
 .btn-expandir {
   position: absolute;
   bottom: 10px;
@@ -67,14 +65,8 @@
 }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; }
-
-/* FULLSCREEN: SÓ ESTICA, NÃO MUDA O FORMATO */
-#player:fullscreen #videoWrapper,
-#player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; }
-#player:fullscreen iframe,
-#player:-webkit-full-screen iframe { border-radius: 0!important; }
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } /* 2 NO TABLET */
+@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } } /* 2 NO CELULAR */
 </style>
 </head>
 <body>
@@ -98,15 +90,15 @@
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- SETA VOLTAR - TOPO ESQUERDO -->
-    <button id="btnVoltar" class="btn-voltar" onclick="voltarHome()">←</button>
-
-    <!-- BOTÃO EXPANDIR - CANTO INFERIOR DIREITO -->
+    <!-- BOTÕES DENTRO DO PLAYER -->
+    <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
   </div>
+  <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
 </div>
 
 <script>
+  // COLOCA ID + NOME + CAPA AQUI. ACEITA.png.jpg.webp
   const videos = {
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
@@ -128,7 +120,12 @@
       const container = document.getElementById(cat);
       let html = '';
       videos[cat].forEach(v => {
-        html += `<div class="card" data-id="${v.id}"><img src="${v.capa}" loading="lazy" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'"><h3>${v.nome}</h3></div>`;
+        html += `
+          <div class="card" data-id="${v.id}">
+            <img src="${v.capa}" loading="lazy" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'">
+            <h3>${v.nome}</h3>
+          </div>
+        `;
       });
       container.innerHTML = html;
     }
@@ -150,8 +147,8 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    document.getElementById('btnExpandir').style.display = 'block';
-    document.getElementById('btnVoltar').style.display = 'flex';
+    document.getElementById('btnExpandir').style.display = 'block'; // mostra expandir
+    document.getElementById('btnVoltar').style.display = 'flex'; // mostra voltar
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -169,23 +166,21 @@
     const btnVoltar = document.getElementById('btnVoltar');
 
     if(!document.fullscreenElement){
-      player.requestFullscreen();
+      player.requestFullscreen(); // 1º clique expande
       btnVoltar.style.display = 'none'; // só seta some
     } else {
-      document.exitFullscreen();
+      document.exitFullscreen(); // 2º clique minimiza
       btnVoltar.style.display = 'flex'; // seta volta
     }
   }
 
-  function voltarHome() {
+  function fecharVideo() {
     if(document.exitFullscreen) document.exitFullscreen();
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
     carregando = false;
   }
-
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') voltarHome(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
