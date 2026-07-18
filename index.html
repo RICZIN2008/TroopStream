@@ -17,39 +17,37 @@
   nav button.active, nav button:hover { background: var(--green); color: #000; }
 
 .container { padding: 15px; width: 100%; max-width: 1400px; margin: auto; }
-
 .categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
 .categoria.active { display: grid; }
 
 .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
 .card:hover { border-color: var(--green); transform: scale(1.03); }
-
 .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 8px; font-size: 12px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
 
   /* PLAYER */
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 800px; position: relative; }
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { width: 95%; max-width: 900px; position: relative; }
   iframe { width: 100%; aspect-ratio: 16/9; max-height: 60vh; background: #000; border: 2px solid var(--green); border-radius: 8px; }
-.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
+.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; z-index: 2; }
 
 .btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; transition: 0.2s; }
 .btn-fechar:hover { filter: brightness(1.2); }
 
-  /* QUANDO ENTRAR EM TELA CHEIA */
+  /* QUANDO ENTRAR EM TELA CHEIA - ESCONDE TUDO */
   #player:fullscreen.btn-fechar,
-  #player:-webkit-full-screen.btn-fechar { display: none!important; } /* some com botão fechar */
-  
+  #player:-webkit-full-screen.btn-fechar { display: none!important; }
+
   #player:fullscreen #videoWrapper,
-  #player:-webkit-full-screen #videoWrapper { width: 100%!important; height: 100%!important; max-width: none!important; }
+  #player:-webkit-full-screen #videoWrapper { width: 100%!important; height: 100%!important; max-width: none!important; padding: 0; }
 
   #player:fullscreen iframe,
-  #player:-webkit-full-screen iframe { height: 100%!important; max-height: none!important; border: none!important; border-radius: 0!important; aspect-ratio: auto!important; }
+  #player:-webkit-full-screen iframe { height: 100%!important; width: 100%!important; max-height: none!important; border: none!important; border-radius: 0!important; aspect-ratio: auto!important; }
 
   @media (orientation: landscape) {
-  .categoria { grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; }
-  .card img { max-height: 35vh; }
-   header, nav { padding: 6px; }
+ .categoria { grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; }
+ .card img { max-height: 35vh; }
+  header, nav { padding: 6px; }
   }
 </style>
 </head>
@@ -69,12 +67,12 @@
   <div id="animes" class="categoria"></div>
 </div>
 
-<div id="player">
+<div id="player" onclick="handlePlayerClick(event)">
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
-    <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
+    <iframe id="video" allowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; encrypted-media" frameborder="0" referrerpolicy="no-referrer"></iframe>
   </div>
-  <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
+  <button class="btn-fechar" onclick="fecharVideo(event)">[X] FECHAR</button>
 </div>
 
 <script>
@@ -93,6 +91,7 @@
   };
 
   let carregando = false;
+  const player = document.getElementById('player');
 
   function carregarVideos() {
     for(let cat in videos){
@@ -118,7 +117,7 @@
   function abrirVideo(fileid) {
     if(carregando) return;
     carregando = true;
-    document.getElementById('player').style.display = 'flex';
+    player.style.display = 'flex';
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -127,16 +126,43 @@
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
+        // Força fullscreen se já estiver deitado
+        if(window.innerHeight < window.innerWidth) toggleFullscreen();
       }
     }, 200);
   }
 
-  function fecharVideo() {
-    // Sai do fullscreen se tiver
+  // NOVO: Captura clique no botão [ ] do player
+  function handlePlayerClick(e){
+    // Se clicou dentro do iframe não faz nada
+    if(e.target.tagName === 'IFRAME') return;
+    // Se clicou no fundo preto do player, fecha
+    if(e.target.id === 'player') fecharVideo(e);
+  }
+
+  function toggleFullscreen(){
+    if(!document.fullscreenElement){
+      if(player.requestFullscreen) player.requestFullscreen();
+      else if(player.webkitRequestFullscreen) player.webkitRequestFullscreen();
+    } else {
+      if(document.exitFullscreen) document.exitFullscreen();
+      else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+  }
+
+  // GAMBIARRA: Escuta mensagem do iframe pedindo fullscreen
+  window.addEventListener('message', (event) => {
+    if(event.data === 'requestFullscreen' || event.data.type === 'requestFullscreen'){
+      toggleFullscreen();
+    }
+  });
+
+  function fecharVideo(e) {
+    if(e) e.stopPropagation();
     if(document.exitFullscreen) document.exitFullscreen();
     if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-    
-    document.getElementById('player').style.display = 'none';
+
+    player.style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
     carregando = false;
@@ -145,11 +171,10 @@
   // ESC fecha tudo
   document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
 
-  // Detecta quando sai do fullscreen com botão do player
+  // Detecta quando sai do fullscreen pelo botão do player
   document.addEventListener('fullscreenchange', () => {
-    if(!document.fullscreenElement && document.getElementById('player').style.display === 'flex'){
-      document.getElementById('player').style.display = 'none';
-      document.getElementById('video').src = '';
+    if(!document.fullscreenElement && player.style.display === 'flex'){
+      // não fecha, só sai do full
     }
   });
 
