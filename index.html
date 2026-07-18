@@ -17,20 +17,24 @@
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
 .container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 12px; } /* FORÇADO 3 COLUNAS */
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; } /* 3 FIXO */
 .categoria.active { display: grid; }
 .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
 .card:hover { border-color: var(--green); box-shadow: 0 0 15px #003b00; transform: scale(1.03); }
-.card img { width: 100%; height: 260px; object-fit: cover; background: #000; display: block; } /* CAPA LIMPA */
-.card h3 { padding: 8px; font-size: 12px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--card); } /* NOME EMBAIXO */
+.card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; } /* CAPA */
+.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
 
- @media(max-width: 600px){ /* No celular fica 2 por linha */
- .categoria { grid-template-columns: repeat(2, 1fr); }
- .card img { height: 200px; }
+@media(max-width: 768px){ /* TABLET 2 COLUNAS */
+.categoria { grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 480px){ /* CELULAR 2 COLUNAS */
+.categoria { grid-template-columns: repeat(2, 1fr); }
+.card img { height: 220px; }
+}
 </style>
 </head>
 <body>
@@ -55,14 +59,16 @@
 </div>
 
 <script>
+  // AGORA VOCÊ COLOCA ID + NOME + CAPA MANUAL
+  // ACEITA.png.jpg.webp.jpeg
   const videos = {
     filmes: [
-      {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026'},
-      {id: 'ID_DO_VIDEO_2', nome: 'FILME 2'},
-      {id: 'ID_DO_VIDEO_3', nome: 'FILME 3'},
-      {id: 'ID_DO_VIDEO_4', nome: 'FILME 4'},
-      {id: 'ID_DO_VIDEO_5', nome: 'FILME 5'},
-      {id: 'ID_DO_VIDEO_6', nome: 'FILME 6'}
+      {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
+      {id: 'ID_DO_VIDEO_2', nome: 'FILME 2', capa: 'https://placehold.co/300x400/003b00/00ff41.jpg?text=FILME+2'},
+      {id: 'ID_DO_VIDEO_3', nome: 'FILME 3', capa: 'https://placehold.co/300x400/003b00/00ff41.webp?text=FILME+3'},
+      {id: 'ID_DO_VIDEO_4', nome: 'FILME 4', capa: 'https://placehold.co/300x400/003b00/00ff41.png?text=FILME+4'},
+      {id: 'ID_DO_VIDEO_5', nome: 'FILME 5', capa: 'https://placehold.co/300x400/003b00/00ff41.jpg?text=FILME+5'},
+      {id: 'ID_DO_VIDEO_6', nome: 'FILME 6', capa: 'https://placehold.co/300x400/003b00/00ff41.webp?text=FILME+6'}
     ],
     series: [],
     animes: []
@@ -71,10 +77,11 @@
   function carregarVideos() {
     for(let cat in videos){
       const container = document.getElementById(cat);
+      container.innerHTML = ''; // limpa antes
       videos[cat].forEach(v => {
         const card = `
           <div class="card" onclick="abrirVideo('${v.id}')">
-            <img src="https://img.stape.me/${v.id}.jpg" onerror="this.src='https://placehold.co/300x260/003b00/00ff41?text=HACKERFLIX'">
+            <img src="${v.capa}" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'">
             <h3>${v.nome}</h3>
           </div>
         `;
