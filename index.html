@@ -36,7 +36,6 @@
 #listaEpisodios { display: grid; gap: 8px; }
 .ep { background: var(--card); border: 1px solid #003b00; padding: 12px; cursor: pointer; text-align: center; transition: 0.2s; border-radius: 4px; font-weight: bold; }
 .ep:hover { background: var(--green); color: #000; border-color: var(--green); }
-.ep.active { background: var(--green); color: #000; }
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
@@ -76,35 +75,37 @@
 
 <script>
   const videos = {
-    // FILMES = Clica e já abre o vídeo
+    // FILMES: Clica e já abre
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
+      {id: '3xdbv6m1lWuddxV', nome: 'Super Mario Galaxy', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/smg-home-header-mobile.png'},
+      {id: 'g9gWA61gm3sqD8q', nome: 'Homem-Aranha', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/hhRD5m-w4L7Gje7FgahvaeKS5NLEYJVDSQsmbNqvmi-L51PlpyVJnGr6M3siA5LIn9r4ry0wVQsBHxRJXAc.png'},
+      {id: 'lkMMBoqZlgc7YX6', nome: 'Michael', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0002.jpg'},
+      {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
+      {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
 
-    // SERIES = Clica na capa > abre lista de Episodios
+    // SERIES: Clica na capa > abre lista de Episodios. Mesmo nome/id/capa dos filmes pra não ficar vazio
     series: [
-      {
-        nome: 'STRANGER THINGS',
-        capa: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg',
-        episodios: [
-          {id: 'OxrqvvY7K9i6Me', nome: 'Episódio 1'},
-          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
-          {id: 'COLA_ID_EP3_AQUI', nome: 'Episódio 3'},
-        ]
-      }
+      {nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png', episodios: [{id: 'V6VPMJ77vgSKr7z', nome: 'Episódio 1'}]},
+      {nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg', episodios: [{id: '0BQKmpzWWbHb972', nome: 'Episódio 1'}]},
+      {nome: 'Super Mario Galaxy', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/smg-home-header-mobile.png', episodios: [{id: '3xdbv6m1lWuddxV', nome: 'Episódio 1'}]},
+      {nome: 'Homem-Aranha', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/hhRD5m-w4L7Gje7FgahvaeKS5NLEYJVDSQsmbNqvmi-L51PlpyVJnGr6M3siA5LIn9r4ry0wVQsBHxRJXAc.png', episodios: [{id: 'g9gWA61gm3sqD8q', nome: 'Episódio 1'}]},
+      {nome: 'Michael', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0002.jpg', episodios: [{id: 'lkMMBoqZlgc7YX6', nome: 'Episódio 1'}]},
+      {nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg', episodios: [{id: '2kr27ed2WpIZ0q1', nome: 'Episódio 1'}]},
+      {nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg', episodios: [{id: 'kPBgWMO1xjtOVpw', nome: 'Episódio 1'}]},
     ],
 
-    // ANIMES = Clica na capa > abre lista de Episodios
+    // ANIMES: Mesma coisa. Só duplicar a linha do episodio pra adicionar Ep2, Ep3...
     animes: [
-      {
-        nome: 'DEMON SLAYER',
-        capa: 'https://image.tmdb.org/t/p/w500/aLQeVCt5ih9jwY5Eex6jKcVJmN5.jpg',
-        episodios: [
-          {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1'},
-          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
-        ]
-      }
+      {nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png', episodios: [{id: 'V6VPMJ77vgSKr7z', nome: 'Episódio 1'}]},
+      {nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg', episodios: [{id: '0BQKmpzWWbHb972', nome: 'Episódio 1'}]},
+      {nome: 'Super Mario Galaxy', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/smg-home-header-mobile.png', episodios: [{id: '3xdbv6m1lWuddxV', nome: 'Episódio 1'}]},
+      {nome: 'Homem-Aranha', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/hhRD5m-w4L7Gje7FgahvaeKS5NLEYJVDSQsmbNqvmi-L51PlpyVJnGr6M3siA5LIn9r4ry0wVQsBHxRJXAc.png', episodios: [{id: 'g9gWA61gm3sqD8q', nome: 'Episódio 1'}]},
+      {nome: 'Michael', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0002.jpg', episodios: [{id: 'lkMMBoqZlgc7YX6', nome: 'Episódio 1'}]},
+      {nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg', episodios: [{id: '2kr27ed2WpIZ0q1', nome: 'Episódio 1'}]},
+      {nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg', episodios: [{id: 'kPBgWMO1xjtOVpw', nome: 'Episódio 1'}]},
     ]
   };
 
@@ -129,7 +130,7 @@
     document.querySelectorAll('.categoria').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById('telaEpisodios').style.display = 'none';
-    document.getElementById('player').style.display = 'none'; // Fecha player ao trocar aba
+    document.getElementById('player').style.display = 'none';
     document.querySelector('.container').style.display = 'block';
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
@@ -150,7 +151,7 @@
   }
 
   function abrirVideo(fileid) {
-    if(carregando ||!fileid || fileid.includes('COLA_ID')) return; // Bloqueia se não tiver ID
+    if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
     document.getElementById('btnExpandir').style.display = 'block';
