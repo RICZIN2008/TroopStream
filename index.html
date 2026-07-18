@@ -25,7 +25,44 @@
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* BOTÃO POR CIMA DO PLAYER */
+  /* SETA 1: VOLTAR PRA HOME - FICA FORA DO VIDEO */
+.btn-home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0,0,0,0.7);
+  border: 2px solid var(--green);
+  color: var(--green);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1002;
+  display: none; /* só aparece quando player abre */
+  align-items: center;
+  justify-content: center;
+}
+.btn-home:hover { background: var(--green); color: #000; }
+
+  /* BOTÃO POR CIMA DO PLAYER - MINIMIZAR */
+.btn-minimizar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,255,65,0.9);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1001;
+  display: none;
+}
+.btn-minimizar:hover { background: var(--green); transform: scale(1.1); }
 .btn-expandir-overlay {
   position: absolute;
   bottom: 8px;
@@ -39,11 +76,10 @@
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 1001; /* fica por cima do iframe */
+  z-index: 1001;
   display: none;
 }
 .btn-expandir-overlay:hover { background: var(--green); transform: scale(1.1); }
-  #player:fullscreen.btn-expandir-overlay { display: none; } /* some no full */
 
 .btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
 
@@ -56,11 +92,14 @@
   #player:not(:fullscreen) iframe { max-height: 80vh!important; }
 }
 
-/* FULLSCREEN */
+/* FULLSCREEN: PLAYER 100% */
 #player:fullscreen #videoWrapper,
 #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; }
 #player:fullscreen iframe,
 #player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
+#player:fullscreen.btn-fechar { display: none!important; } /* some botão fechar */
+#player:fullscreen.btn-expandir-overlay { display: none!important; } /* some expandir */
+#player:fullscreen.btn-minimizar { display: block!important; } /* mostra minimizar */
 </style>
 </head>
 <body>
@@ -80,11 +119,17 @@
 </div>
 
 <div id="player">
+  <!-- SETA 1: VOLTAR PRA HOME -->
+  <button class="btn-home" onclick="fecharVideo()">←</button>
+
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- BOTÃO QUE FICA POR CIMA -->
+    <!-- SETA 2: MINIMIZAR - FICA DENTRO DO VIDEO -->
+    <button class="btn-minimizar" onclick="toggleFullscreen()">⤓</button>
+
+    <!-- BOTÃO EXPANDIR NORMAL -->
     <button class="btn-expandir-overlay" onclick="toggleFullscreen()">[ ]</button>
   </div>
   <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
@@ -134,6 +179,7 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
+    document.querySelector('.btn-home').style.display = 'flex'; /* mostra seta home */
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -142,7 +188,7 @@
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
-        document.querySelector('.btn-expandir-overlay').style.display = 'block'; // mostra o botão
+        document.querySelector('.btn-expandir-overlay').style.display = 'block';
       }
     }, 200);
   }
@@ -161,8 +207,11 @@
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
     document.querySelector('.btn-expandir-overlay').style.display = 'none';
+    document.querySelector('.btn-home').style.display = 'none';
     carregando = false;
   }
+
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
