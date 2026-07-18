@@ -25,27 +25,28 @@
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* SETA VOLTAR - SÓ APARECE NO FULLSCREEN */
+  /* SETA VOLTAR - FICA NO LUGAR DO EXPANDIR */
 .btn-voltar {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  background: rgba(0,0,0,0.7);
-  border: 2px solid var(--green);
-  color: var(--green);
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  font-size: 24px;
+  bottom: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0,255,65,0.9);
+  border: none;
+  border-radius: 6px;
+  color: #000;
+  font-size: 22px;
+  font-weight: bold;
   cursor: pointer;
-  z-index: 1002;
-  display: none;
+  z-index: 1001;
+  display: none; /* começa escondida */
   align-items: center;
   justify-content: center;
 }
-.btn-voltar:hover { background: var(--green); color: #000; }
+.btn-voltar:hover { background: var(--green); transform: scale(1.1); }
 
-  /* BOTÃO EXPANDIR - SÓ APARECE NO MODO NORMAL */
+  /* BOTÃO EXPANDIR */
 .btn-expandir {
   position: absolute;
   bottom: 8px;
@@ -79,7 +80,7 @@
 #player:fullscreen iframe,
 #player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
 
-/* CONTROLE DE EXIBIÇÃO */
+/* REGRA: NO FULLSCREEN ESCONDE EXPANDIR E MOSTRA SETA */
 #player:fullscreen.btn-expandir { display: none!important; }
 #player:fullscreen.btn-voltar { display: flex!important; }
 </style>
@@ -101,15 +102,15 @@
 </div>
 
 <div id="player">
-  <!-- SETA VOLTAR - TOPO. SÓ APARECE NO FULL -->
-  <button class="btn-voltar" onclick="voltarHome()">←</button>
-
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- BOTÃO EXPANDIR - DENTRO DO VIDEO. SÓ APARECE NO NORMAL -->
+    <!-- BOTÃO EXPANDIR -->
     <button class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
+
+    <!-- SETA VOLTAR - MESMO LUGAR -->
+    <button class="btn-voltar" onclick="toggleFullscreen()">←</button>
   </div>
 </div>
 
@@ -178,15 +179,11 @@
     }
   }
 
-  function voltarHome() {
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') {
     if(document.exitFullscreen) document.exitFullscreen();
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
-    document.getElementById('loading').style.display = 'none';
-    carregando = false;
-  }
-
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') voltarHome(); });
+  }});
 
   window.addEventListener('load', carregarVideos);
 </script>
