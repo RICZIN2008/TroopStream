@@ -7,7 +7,7 @@
 <style>
   :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
-  body { background: var(--bg); color: var(--green); overflow-x: hidden; } /* trava scroll lateral */
+  body { background: var(--bg); color: var(--green); overflow-x: hidden; }
 
   header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 999; }
   header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
@@ -18,46 +18,49 @@
 
  .container { padding: 15px; width: 100%; max-width: 1400px; margin: auto; }
 
-  /* 3 COLUNAS SEMPRE - PC, TABLET E CELULAR */
+  /* 3 COLUNAS SEMPRE */
  .categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
  .categoria.active { display: grid; }
 
  .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; position: relative; }
  .card:hover { border-color: var(--green); transform: scale(1.03); }
 
-  /* TRAVA PROPORÇÃO E NÃO DEIXA GIRAR */
+  /* POSTER NÃO DEITA E NÃO ESTICA */
  .card img {
     width: 100%;
-    aspect-ratio: 2/3; /* 2:3 é proporção de poster */
+    aspect-ratio: 2/3;
     object-fit: cover;
     background: #000;
     display: block;
-    transform: none!important; /* mata rotação que vem do github */
+    transform: none!important;
   }
 
  .card h3 { padding: 8px; font-size: 12px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
 
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
-  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
+  /* PLAYER NÃO ABRE GIGANTE */
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #videoWrapper { width: 95%; max-width: 800px; position: relative; }
+  iframe { width: 100%; aspect-ratio: 16/9; max-height: 60vh; background: #000; border: 2px solid var(--green); border-radius: 8px; }
  .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
- .btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
 
-  /* APENAS AJUSTE DE GAP EM TELA PEQUENA. CONTINUA 3 COLUNAS */
-  @media(max-width: 900px){
-   .categoria { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-   .card img { aspect-ratio: 2/3; }
+ .btns-player { display: flex; gap: 10px; margin-top: 10px; }
+ .btn-player { background: var(--green); color: #000; border: none; padding: 8px 16px; cursor: pointer; font-weight: bold; border-radius: 4px; font-size: 12px; }
+ .btn-player:hover { filter: brightness(1.2); }
+
+  /* SÓ FICA TELA CHEIA SE CLICAR */
+  #player.fullscreen { width: 100vw!important; height: 100vh!important; }
+  #player.fullscreen #videoWrapper { width: 100%!important; height: 100%!important; max-width: none!important; }
+  #player.fullscreen iframe { height: 100%!important; max-height: none!important; border: none!important; border-radius: 0!important; aspect-ratio: auto!important; }
+
+  /* LANDSCAPE: 4 COLUNAS PRA APROVEITAR */
+  @media (orientation: landscape) {
+   .categoria { grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 1000px; margin: 0 auto; }
+   .card img { max-height: 35vh; }
+    header, nav { padding: 6px; }
   }
   @media(max-width: 500px){
-   .categoria { grid-template-columns: repeat(3, 1fr); gap: 6px; } /* MUDEI DE 2 PARA 3 */
-   .card img { aspect-ratio: 2/3; }
+   .categoria { gap: 6px; }
    .card h3 { font-size: 10px; padding: 5px; }
-  }
-
-  /* LANDSCAPE: TRAVA LARGURA PRA NÃO SUMIR HEADER */
-  @media(orientation: landscape) and (max-height: 500px){
-   .container { max-width: 900px; }
-   .categoria { gap: 10px; }
   }
 </style>
 </head>
@@ -82,7 +85,10 @@
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
   </div>
-  <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
+  <div class="btns-player">
+    <button class="btn-player" onclick="toggleFullscreen()">[ ] EXPANDIR</button>
+    <button class="btn-player" onclick="fecharVideo()">[X] FECHAR</button>
+  </div>
 </div>
 
 <script>
@@ -146,14 +152,25 @@
     }, 200);
   }
 
+  function toggleFullscreen() {
+    const player = document.getElementById('player');
+    player.classList.toggle('fullscreen');
+    if (player.classList.contains('fullscreen')) {
+        if (player.requestFullscreen) player.requestFullscreen();
+    } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+    }
+  }
+
   function fecharVideo() {
+    document.getElementById('player').classList.remove('fullscreen');
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
     carregando = false;
+    if (document.exitFullscreen) document.exitFullscreen();
   }
 
-  // FECHAR PLAYER COM ESC
   document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
 
   window.addEventListener('load', carregarVideos);
