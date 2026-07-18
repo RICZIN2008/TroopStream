@@ -20,9 +20,11 @@
 .card:hover { border-color: var(--green); transform: scale(1.03); }
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
-  #videoWrapper { width: 90%; max-width: 1000px; position: relative; }
-  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
+
+  /* PLAYER VOLTOU PRO FORMATO ORIGINAL */
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; }
+  #videoWrapper { width: 90%; max-width: 900px; position: relative; }
+  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); border-radius: 5px; }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
   /* SETA VOLTAR - TOPO ESQUERDO DENTRO DO PLAYER */
@@ -40,13 +42,13 @@
   font-weight: bold;
   cursor: pointer;
   z-index: 1002;
-  display: none; /* começa escondida */
+  display: none;
   align-items: center;
   justify-content: center;
 }
 .btn-voltar:hover { background: var(--green); transform: scale(1.1); }
 
-  /* BOTÃO EXPANDIR - CANTO INFERIOR DIREITO DENTRO DO PLAYER. NUNCA SOME */
+  /* BOTÃO EXPANDIR - CANTO INFERIOR DIREITO. NUNCA SOME */
 .btn-expandir {
   position: absolute;
   bottom: 10px;
@@ -65,14 +67,14 @@
 }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); }
-@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; }
 
-/* FULLSCREEN: PLAYER 100% */
+/* FULLSCREEN: SÓ ESTICA, NÃO MUDA O FORMATO */
 #player:fullscreen #videoWrapper,
-#player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; display: flex; align-items: center; justify-content: center; }
+#player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; }
 #player:fullscreen iframe,
-#player:-webkit-full-screen iframe { width: 100%!important; height: 100%!important; border: none!important; }
+#player:-webkit-full-screen iframe { border-radius: 0!important; }
 </style>
 </head>
 <body>
@@ -148,8 +150,8 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    document.getElementById('btnExpandir').style.display = 'block'; // expandir sempre aparece
-    document.getElementById('btnVoltar').style.display = 'flex'; // voltar aparece junto
+    document.getElementById('btnExpandir').style.display = 'block';
+    document.getElementById('btnVoltar').style.display = 'flex';
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -167,13 +169,11 @@
     const btnVoltar = document.getElementById('btnVoltar');
 
     if(!document.fullscreenElement){
-      // 1º CLIQUE NO [ ] - EXPANDE
       player.requestFullscreen();
-      btnVoltar.style.display = 'none'; // SÓ A SETA SOME
+      btnVoltar.style.display = 'none'; // só seta some
     } else {
-      // 2º CLIQUE NO [ ] - MINIMIZA
       document.exitFullscreen();
-      btnVoltar.style.display = 'flex'; // SETA VOLTA
+      btnVoltar.style.display = 'flex'; // seta volta
     }
   }
 
