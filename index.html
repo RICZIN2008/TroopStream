@@ -25,45 +25,28 @@
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-  /* SETA 1: VOLTAR PRA HOME - FICA FORA DO VIDEO */
-.btn-home {
+  /* SETA 1: VOLTAR PRA HOME - TOPO */
+.btn-home-topo {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(0,0,0,0.7);
+  background: transparent;
   border: 2px solid var(--green);
   color: var(--green);
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
   z-index: 1002;
-  display: none; /* só aparece quando player abre */
+  display: none;
   align-items: center;
   justify-content: center;
 }
-.btn-home:hover { background: var(--green); color: #000; }
+.btn-home-topo:hover { background: var(--green); color: #000; }
 
-  /* BOTÃO POR CIMA DO PLAYER - MINIMIZAR */
+  /* SETA 2: MINIMIZAR - DENTRO DO VIDEO */
 .btn-minimizar {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 40px;
-  height: 40px;
-  background: rgba(0,255,65,0.9);
-  border: none;
-  border-radius: 6px;
-  color: #000;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1001;
-  display: none;
-}
-.btn-minimizar:hover { background: var(--green); transform: scale(1.1); }
-.btn-expandir-overlay {
   position: absolute;
   bottom: 8px;
   right: 8px;
@@ -79,9 +62,8 @@
   z-index: 1001;
   display: none;
 }
-.btn-expandir-overlay:hover { background: var(--green); transform: scale(1.1); }
-
-.btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
+.btn-minimizar:hover { background: var(--green); transform: scale(1.1); }
+#player:fullscreen.btn-minimizar { display: block!important; } /* só aparece no full */
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
@@ -97,9 +79,6 @@
 #player:-webkit-full-screen #videoWrapper { width: 100%!important; max-width: 100%!important; height: 100%!important; }
 #player:fullscreen iframe,
 #player:-webkit-full-screen iframe { height: 100%!important; border: none!important; }
-#player:fullscreen.btn-fechar { display: none!important; } /* some botão fechar */
-#player:fullscreen.btn-expandir-overlay { display: none!important; } /* some expandir */
-#player:fullscreen.btn-minimizar { display: block!important; } /* mostra minimizar */
 </style>
 </head>
 <body>
@@ -120,19 +99,15 @@
 
 <div id="player">
   <!-- SETA 1: VOLTAR PRA HOME -->
-  <button class="btn-home" onclick="fecharVideo()">←</button>
+  <button class="btn-home-topo" onclick="voltarHome()">←</button>
 
   <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
     <iframe id="video" allowfullscreen allow="autoplay; fullscreen" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- SETA 2: MINIMIZAR - FICA DENTRO DO VIDEO -->
-    <button class="btn-minimizar" onclick="toggleFullscreen()">⤓</button>
-
-    <!-- BOTÃO EXPANDIR NORMAL -->
-    <button class="btn-expandir-overlay" onclick="toggleFullscreen()">[ ]</button>
+    <!-- SETA 2: MINIMIZAR - SÓ APARECE NO FULLSCREEN -->
+    <button class="btn-minimizar" onclick="minimizarVideo()">↩</button>
   </div>
-  <button class="btn-fechar" onclick="fecharVideo()">[X] FECHAR</button>
 </div>
 
 <script>
@@ -179,7 +154,7 @@
     if(carregando) return;
     carregando = true;
     document.getElementById('player').style.display = 'flex';
-    document.querySelector('.btn-home').style.display = 'flex'; /* mostra seta home */
+    document.querySelector('.btn-home-topo').style.display = 'flex';
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
@@ -188,30 +163,26 @@
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
-        document.querySelector('.btn-expandir-overlay').style.display = 'block';
       }
     }, 200);
   }
 
-  function toggleFullscreen(){
-    if(!document.fullscreenElement){
-      document.getElementById('player').requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
+  function minimizarVideo() {
+    // SÓ SAI DO FULLSCREEN, NÃO FECHA O VIDEO
+    if(document.exitFullscreen) document.exitFullscreen();
   }
 
-  function fecharVideo() {
+  function voltarHome() {
+    // FECHA TUDO E VOLTA PRA LISTA
     if(document.exitFullscreen) document.exitFullscreen();
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
-    document.querySelector('.btn-expandir-overlay').style.display = 'none';
-    document.querySelector('.btn-home').style.display = 'none';
+    document.querySelector('.btn-home-topo').style.display = 'none';
     carregando = false;
   }
 
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') voltarHome(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
