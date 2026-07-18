@@ -2,32 +2,63 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>HACKERFLIX</title>
 <style>
   :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
-  body { background: var(--bg); color: var(--green); }
-  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
+  body { background: var(--bg); color: var(--green); overflow-x: hidden; } /* trava scroll lateral */
+
+  header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 999; }
   header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
-  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
+
+  nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; position: sticky; top: 44px; z-index: 998; }
   nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
   nav button.active, nav button:hover { background: var(--green); color: #000; }
-.container { padding: 15px; width: 100%; margin: auto; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; } /* 3 FIXO NO PC */
-.categoria.active { display: grid; }
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; }
-.card:hover { border-color: var(--green); transform: scale(1.03); }
-.card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
-.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
+
+ .container { padding: 15px; width: 100%; max-width: 1400px; margin: auto; }
+
+  /* 3 COLUNAS SEMPRE - PC, TABLET E CELULAR */
+ .categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+ .categoria.active { display: grid; }
+
+ .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; position: relative; }
+ .card:hover { border-color: var(--green); transform: scale(1.03); }
+
+  /* TRAVA PROPORÇÃO E NÃO DEIXA GIRAR */
+ .card img {
+    width: 100%;
+    aspect-ratio: 2/3; /* 2:3 é proporção de poster */
+    object-fit: cover;
+    background: #000;
+    display: block;
+    transform: none!important; /* mata rotação que vem do github */
+  }
+
+ .card h3 { padding: 8px; font-size: 12px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
+
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
-.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
-.btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
+ .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
+ .btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; z-index: 1001; }
 
-@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } } /* 2 NO TABLET */
-@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } } /* 2 NO CELULAR */
+  /* APENAS AJUSTE DE GAP EM TELA PEQUENA. CONTINUA 3 COLUNAS */
+  @media(max-width: 900px){
+   .categoria { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+   .card img { aspect-ratio: 2/3; }
+  }
+  @media(max-width: 500px){
+   .categoria { grid-template-columns: repeat(3, 1fr); gap: 6px; } /* MUDEI DE 2 PARA 3 */
+   .card img { aspect-ratio: 2/3; }
+   .card h3 { font-size: 10px; padding: 5px; }
+  }
+
+  /* LANDSCAPE: TRAVA LARGURA PRA NÃO SUMIR HEADER */
+  @media(orientation: landscape) and (max-height: 500px){
+   .container { max-width: 900px; }
+   .categoria { gap: 10px; }
+  }
 </style>
 </head>
 <body>
@@ -55,7 +86,6 @@
 </div>
 
 <script>
-  // COLOCA ID + NOME + CAPA AQUI. ACEITA.png.jpg.webp
   const videos = {
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
@@ -122,6 +152,9 @@
     document.getElementById('loading').style.display = 'none';
     carregando = false;
   }
+
+  // FECHAR PLAYER COM ESC
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharVideo(); });
 
   window.addEventListener('load', carregarVideos);
 </script>
