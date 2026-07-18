@@ -3,38 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HACKERFLIX</title>
+<title>Troop Stream</title>
 <style>
   :root { --green: #00ff41; --bg: #010a01; --card: #021102; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', monospace; }
   body { background: var(--bg); color: var(--green); }
-  body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03), rgba(0,255,65,0.03) 1px, transparent 1px, transparent 2px);
-    pointer-events: none; z-index: 1; }
+  /* TIREI O EFEITO PESADO DE SCANLINE */
   header { background: var(--card); border-bottom: 2px solid var(--green); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 10; }
   header h1 { font-size: 18px; text-shadow: 0 0 10px var(--green); }
   nav { display: flex; justify-content: center; gap: 10px; padding: 10px; background: var(--card); border-bottom: 1px solid #003b00; }
-  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; }
-  nav button.active, nav button:hover { background: var(--green); color: #000; box-shadow: 0 0 15px var(--green); }
-.container { padding: 15px; max-width: 1200px; margin: auto; position: relative; z-index: 2; }
-.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; } /* 3 FIXO */
+  nav button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 6px 14px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 12px; will-change: transform; }
+  nav button.active, nav button:hover { background: var(--green); color: #000; }
+.container { padding: 15px; width: 100%; margin: auto; }
+.categoria { display: none; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; }
 .categoria.active { display: grid; }
-.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: 0.2s; }
-.card:hover { border-color: var(--green); box-shadow: 0 0 15px #003b00; transform: scale(1.03); }
-.card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; } /* CAPA */
+.card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; contain: layout; } /* contain deixa mais leve */
+.card:hover { border-color: var(--green); transform: scale(1.03); }
+.card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; loading: lazy; } /* LAZY LOAD */
 .card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
-  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
+  #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; flex-direction: column; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); }
 .btn-fechar { background: var(--green); color: #000; border: none; padding: 8px 20px; margin-top: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
 
-@media(max-width: 768px){ /* TABLET 2 COLUNAS */
-.categoria { grid-template-columns: repeat(2, 1fr); }
-}
-@media(max-width: 480px){ /* CELULAR 2 COLUNAS */
-.categoria { grid-template-columns: repeat(2, 1fr); }
-.card img { height: 220px; }
-}
+@media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
+@media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
 </style>
 </head>
 <body>
@@ -59,34 +52,36 @@
 </div>
 
 <script>
-  // AGORA VOCÊ COLOCA ID + NOME + CAPA MANUAL
-  // ACEITA.png.jpg.webp.jpeg
   const videos = {
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
-      {id: 'ID_DO_VIDEO_2', nome: 'FILME 2', capa: 'https://placehold.co/300x400/003b00/00ff41.jpg?text=FILME+2'},
-      {id: 'ID_DO_VIDEO_3', nome: 'FILME 3', capa: 'https://placehold.co/300x400/003b00/00ff41.webp?text=FILME+3'},
-      {id: 'ID_DO_VIDEO_4', nome: 'FILME 4', capa: 'https://placehold.co/300x400/003b00/00ff41.png?text=FILME+4'},
-      {id: 'ID_DO_VIDEO_5', nome: 'FILME 5', capa: 'https://placehold.co/300x400/003b00/00ff41.jpg?text=FILME+5'},
-      {id: 'ID_DO_VIDEO_6', nome: 'FILME 6', capa: 'https://placehold.co/300x400/003b00/00ff41.webp?text=FILME+6'}
+      {id: 'ID_DO_VIDEO_2', nome: 'FILME 2', capa: 'https://placehold.co/300x400/003b00/00ff41.jpg'},
+      {id: 'ID_DO_VIDEO_3', nome: 'FILME 3', capa: 'https://placehold.co/300x400/003b00/00ff41.webp'},
+      {id: 'ID_DO_VIDEO_4', nome: 'FILME 4', capa: 'https://placehold.co/300x400/003b00/00ff41.png'},
+      {id: 'ID_DO_VIDEO_5', nome: 'FILME 5', capa: 'https://placehold.co/300x400/003b00/00ff41.jpg'},
+      {id: 'ID_DO_VIDEO_6', nome: 'FILME 6', capa: 'https://placehold.co/300x400/003b00/00ff41.webp'}
     ],
     series: [],
     animes: []
   };
 
+  let videoAtual = ''; // guarda o ID pra não recarregar 2x
+
   function carregarVideos() {
+    const fragment = document.createDocumentFragment(); // monta tudo fora do DOM = mais rápido
     for(let cat in videos){
       const container = document.getElementById(cat);
-      container.innerHTML = ''; // limpa antes
       videos[cat].forEach(v => {
-        const card = `
-          <div class="card" onclick="abrirVideo('${v.id}')">
-            <img src="${v.capa}" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'">
-            <h3>${v.nome}</h3>
-          </div>
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => abrirVideo(v.id);
+        card.innerHTML = `
+          <img src="${v.capa}" loading="lazy" onerror="this.src='https://placehold.co/300x400/003b00/00ff41?text=SEM+CAPA'">
+          <h3>${v.nome}</h3>
         `;
-        container.innerHTML += card;
+        fragment.appendChild(card);
       });
+      container.appendChild(fragment.cloneNode(true));
     }
   }
 
@@ -98,16 +93,21 @@
   }
 
   function abrirVideo(fileid) {
+    if(videoAtual === fileid) return; // evita recarregar o mesmo vídeo
+    videoAtual = fileid;
     document.getElementById('player').style.display = 'flex';
-    document.getElementById('video').src = `https://stape.me/e/${fileid}`;
+    const iframe = document.getElementById('video');
+    iframe.src = `https://stape.me/e/${fileid}?autoplay=1&popup=false`; // só carrega quando clicar
   }
 
   function fecharVideo() {
     document.getElementById('player').style.display = 'none';
-    document.getElementById('video').src = '';
+    document.getElementById('video').src = ''; // mata o iframe e libera RAM
+    videoAtual = '';
   }
 
-  carregarVideos();
+  // Carrega só depois que a página carregar
+  window.addEventListener('load', carregarVideos);
 </script>
 
 </body>
