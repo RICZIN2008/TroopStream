@@ -30,8 +30,8 @@
 .btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1001; display: none; }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
-/* TELA DE EPISODIOS */
-#telaEpisodios { display: none; padding: 20px; max-width: 900px; margin: auto; }
+/* TELA DE EPISODIOS - CORRIGIDA */
+#telaEpisodios { display: none; padding: 20px; max-width: 900px; margin: 0 auto; background: var(--bg); }
 #capaSerie { width: 100%; max-height: 400px; object-fit: cover; border: 2px solid var(--green); margin-bottom: 15px; border-radius: 5px; }
 #listaEpisodios { display: grid; gap: 8px; }
 .ep { background: var(--card); border: 1px solid #003b00; padding: 12px; cursor: pointer; text-align: center; transition: 0.2s; border-radius: 4px; font-weight: bold; }
@@ -55,13 +55,13 @@
   <div id="filmes" class="categoria active"></div>
   <div id="series" class="categoria"></div>
   <div id="animes" class="categoria"></div>
+</div>
 
-  <div id="telaEpisodios">
-    <button onclick="voltarCategorias()" style="background:var(--green);color:#000;border:none;padding:8px 15px;margin-bottom:15px;cursor:pointer;border-radius:4px;">← VOLTAR</button>
-    <h2 id="tituloSerie" style="margin-bottom:10px;text-align:center;"></h2>
-    <img id="capaSerie" src="">
-    <div id="listaEpisodios"></div>
-  </div>
+<div id="telaEpisodios">
+  <button onclick="voltarCategorias()" style="background:var(--green);color:#000;border:none;padding:8px 15px;margin-bottom:15px;cursor:pointer;border-radius:4px;">← VOLTAR</button>
+  <h2 id="tituloSerie" style="margin-bottom:10px;text-align:center;"></h2>
+  <img id="capaSerie" src="">
+  <div id="listaEpisodios"></div>
 </div>
 
 <div id="player">
@@ -75,7 +75,6 @@
 
 <script>
   const videos = {
-    // FILMES: Clica e já abre
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
@@ -85,8 +84,6 @@
       {id: '2kr27ed2WpIZ0q1', nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg'},
       {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
-
-    // SERIES: Clica na capa > abre lista de Episodios. Mesmo nome/id/capa dos filmes pra não ficar vazio
     series: [
       {nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png', episodios: [{id: 'V6VPMJ77vgSKr7z', nome: 'Episódio 1'}]},
       {nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg', episodios: [{id: '0BQKmpzWWbHb972', nome: 'Episódio 1'}]},
@@ -96,8 +93,6 @@
       {nome: 'Oppenheimer', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0037.jpg', episodios: [{id: '2kr27ed2WpIZ0q1', nome: 'Episódio 1'}]},
       {nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg', episodios: [{id: 'kPBgWMO1xjtOVpw', nome: 'Episódio 1'}]},
     ],
-
-    // ANIMES: Mesma coisa. Só duplicar a linha do episodio pra adicionar Ep2, Ep3...
     animes: [
       {nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png', episodios: [{id: 'V6VPMJ77vgSKr7z', nome: 'Episódio 1'}]},
       {nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg', episodios: [{id: '0BQKmpzWWbHb972', nome: 'Episódio 1'}]},
@@ -129,17 +124,18 @@
   function mostrarCategoria(id, btn) {
     document.querySelectorAll('.categoria').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById('telaEpisodios').style.display = 'none';
+    document.getElementById('telaEpisodios').style.display = 'none'; // CORRIGIDO 1
     document.getElementById('player').style.display = 'none';
-    document.querySelector('.container').style.display = 'block';
+    document.querySelector('.container').style.display = 'block'; // CORRIGIDO 2
     document.getElementById(id).classList.add('active');
     btn.classList.add('active');
   }
 
   function abrirSerie(cat, index) {
     const serie = videos[cat][index];
-    document.querySelector('.container').style.display = 'none';
-    document.getElementById('telaEpisodios').style.display = 'block';
+    document.querySelector('.container').style.display = 'none'; // Esconde os cards
+    document.getElementById('telaEpisodios').style.display = 'block'; // Mostra a tela de eps
+
     document.getElementById('tituloSerie').innerText = serie.nome;
     document.getElementById('capaSerie').src = serie.capa;
 
@@ -190,7 +186,7 @@
 
   function voltarCategorias(){
     document.getElementById('telaEpisodios').style.display = 'none';
-    document.querySelector('.container').style.display = 'block';
+    document.querySelector('.container').style.display = 'block'; // Volta a mostrar os cards
   }
 
   window.addEventListener('load', carregarVideos);
