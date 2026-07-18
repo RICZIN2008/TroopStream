@@ -19,84 +19,29 @@
 .card { background: var(--card); border: 1px solid #003b00; border-radius: 5px; overflow: hidden; cursor: pointer; transition: transform 0.2s; min-width: 0; }
 .card:hover { border-color: var(--green); transform: scale(1.03); }
 .card img { width: 100%; height: 280px; object-fit: cover; background: #000; display: block; }
-.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; pointer-events: none; }
+.card h3 { padding: 10px; font-size: 13px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: #000; border-top: 1px solid #003b00; }
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
   iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
 
-.btn-voltar {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(0,255,65,0.9);
-  border: none;
-  color: #000;
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1002;
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
+.btn-voltar { position: absolute; top: 10px; left: 10px; background: rgba(0,255,65,0.9); border: none; color: #000; width: 40px; height: 40px; border-radius: 6px; font-size: 22px; font-weight: bold; cursor: pointer; z-index: 1002; display: none; align-items: center; justify-content: center; }
 .btn-voltar:hover { background: var(--green); transform: scale(1.1); }
-
-.btn-expandir {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  background: rgba(0,255,65,0.9);
-  border: none;
-  border-radius: 6px;
-  color: #000;
-  font-size: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1001;
-  display: none;
-}
+.btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1001; display: none; }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
 
 /* TELA DE EPISODIOS */
 #telaEpisodios { display: none; padding: 20px; max-width: 900px; margin: auto; }
-#capaSerie { width: 100%; max-height: 400px; object-fit: cover; border: 2px solid var(--green); margin-bottom: 15px; }
+#capaSerie { width: 100%; max-height: 400px; object-fit: cover; border: 2px solid var(--green); margin-bottom: 15px; border-radius: 5px; }
 #listaEpisodios { display: grid; gap: 8px; }
-.ep { background: var(--card); border: 1px solid #003b00; padding: 12px; cursor: pointer; text-align: center; transition: 0.2s; }
+.ep { background: var(--card); border: 1px solid #003b00; padding: 12px; cursor: pointer; text-align: center; transition: 0.2s; border-radius: 4px; font-weight: bold; }
 .ep:hover { background: var(--green); color: #000; border-color: var(--green); }
 .ep.active { background: var(--green); color: #000; }
 
 @media(max-width: 900px){.categoria { grid-template-columns: repeat(2, 1fr); } }
 @media(max-width: 500px){.categoria { grid-template-columns: repeat(2, 1fr); }.card img { height: 220px; } }
 
-#player:fullscreen,
-#player:-webkit-full-screen {
-  width: 100vw!important;
-  height: 100vh!important;
-  padding: 0!important;
-  margin: 0!important;
-}
-#player:fullscreen #videoWrapper,
-#player:-webkit-full-screen #videoWrapper {
-  width: 100vw!important;
-  max-width: 100vw!important;
-  height: 100vh!important;
-  padding: 0!important;
-  margin: 0!important;
-}
-#player:fullscreen iframe,
-#player:-webkit-full-screen iframe {
-  width: 100vw!important;
-  height: 100vh!important;
-  border: none!important;
-  aspect-ratio: unset!important;
-  object-fit: cover;
-}
+#player:fullscreen iframe { width: 100vw!important; height: 100vh!important; border: none!important; aspect-ratio: unset!important; object-fit: cover; }
 </style>
 </head>
 <body>
@@ -115,8 +60,8 @@
   <div id="animes" class="categoria"></div>
 
   <div id="telaEpisodios">
-    <button onclick="voltarCategorias()" style="background:var(--green);color:#000;border:none;padding:8px 15px;margin-bottom:15px;cursor:pointer;">← VOLTAR</button>
-    <h2 id="tituloSerie"></h2>
+    <button onclick="voltarCategorias()" style="background:var(--green);color:#000;border:none;padding:8px 15px;margin-bottom:15px;cursor:pointer;border-radius:4px;">← VOLTAR</button>
+    <h2 id="tituloSerie" style="margin-bottom:10px;"></h2>
     <img id="capaSerie" src="">
     <div id="listaEpisodios"></div>
   </div>
@@ -133,7 +78,7 @@
 
 <script>
   const videos = {
-    // FILMES FICARAM IGUAIS. Só adicionar mais aqui do mesmo jeito
+    // FILMES = IGUAL. Clica e já abre
     filmes: [
       {id: 'V6VPMJ77vgSKr7z', nome: 'MÁQUINA DE GUERRA 2026', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/IMG-20260716-WA0005.png'},
       {id: '0BQKmpzWWbHb972', nome: 'Como Mágica', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/images%20(21).jpeg'},
@@ -144,42 +89,43 @@
       {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
     ],
 
-    // SÓ EDITAR AQUI. JÁ DEIXEI 2 MODELOS
+    // SERIES = Clica na capa > abre lista de Episodios
     series: [
       {
-        nome: 'NOME DA SERIE 1', // <-- Muda o nome
-        capa: 'https://m.media-amazon.com/images/M/MV5BMTQ5OTgzOTczM15BMl5BanBnXkFtZTcwMDM2OTY4MQ@@._V1_FMjpg_UX1000_.jpg', // <-- Cola o link da capa
+        nome: 'STRANGER THINGS',
+        capa: 'https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg',
         episodios: [
-          {id: 'OxrqvvY7K9i6Me', nome: 'Episódio 1'}, // <-- Cola o ID do stape
-          {id: 'ID_DO_VIDEO_EP2', nome: 'Episódio 2'}, // <-- Duplica essa linha pra mais eps
+          {id: 'OxrqvvY7K9i6Me', nome: 'Episódio 1 - O Desaparecimento'},
+          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
+          {id: 'COLA_ID_EP3_AQUI', nome: 'Episódio 3'},
         ]
       },
       {
-        nome: 'NOME DA SERIE 2',
-        capa: 'LINK_DA_CAPA_AQUI',
+        nome: 'THE WITCHER',
+        capa: 'https://image.tmdb.org/t/p/w500/zrPpUdoFd0sV9y4ZJ8oT5rT8Jp3.jpg',
         episodios: [
-          {id: 'ID_DO_VIDEO_EP1', nome: 'Episódio 1'},
-          {id: 'ID_DO_VIDEO_EP2', nome: 'Episódio 2'},
+          {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1'},
+          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
         ]
       }
     ],
 
-    // SÓ EDITAR AQUI TAMBÉM. JÁ DEIXEI 2 MODELOS
+    // ANIMES = Clica na capa > abre lista de Episodios
     animes: [
       {
-        nome: 'NOME DO ANIME 1',
-        capa: 'LINK_DA_CAPA_AQUI',
+        nome: 'DEMON SLAYER',
+        capa: 'https://image.tmdb.org/t/p/w500/aLQeVCt5ih9jwY5Eex6jKcVJmN5.jpg',
         episodios: [
-          {id: 'ID_DO_VIDEO_EP1', nome: 'Episódio 1'},
-          {id: 'ID_DO_VIDEO_EP2', nome: 'Episódio 2'},
+          {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1 - Crueldade'},
+          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
         ]
       },
       {
-        nome: 'NOME DO ANIME 2',
-        capa: 'LINK_DA_CAPA_AQUI',
+        nome: 'ONE PIECE',
+        capa: 'https://image.tmdb.org/t/p/w500/cMD9Ygz11zjJzAovURpO9eTS4oE.jpg',
         episodios: [
-          {id: 'ID_DO_VIDEO_EP1', nome: 'Episódio 1'},
-          {id: 'ID_DO_VIDEO_EP2', nome: 'Episódio 2'},
+          {id: 'COLA_ID_EP1_AQUI', nome: 'Episódio 1'},
+          {id: 'COLA_ID_EP2_AQUI', nome: 'Episódio 2'},
         ]
       }
     ]
@@ -251,18 +197,8 @@
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
-        if(isSerie) autoProximo();
       }
     }, 200);
-  }
-
-  // PULA PROXIMO EP SOZINHO
-  function autoProximo(){
-    setTimeout(() => {
-      if(episodioAtual < listaEpisodiosAtual.length - 1){
-        tocarEpisodio(episodioAtual + 1);
-      }
-    }, 5000); // 5 seg depois de carregar. Ajusta o tempo do ep aqui
   }
 
   function toggleFullscreen(){
