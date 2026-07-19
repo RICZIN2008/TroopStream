@@ -275,29 +275,64 @@ function voltarCategorias(){
     document.querySelector('.container').style.display = 'block';
   }
 
-  // ===== ANTI-POPUP SEM PEDIR PERMISSÃO =====
+  // ===== WHITELIST TROOP-STREAM =====
   (function() {
-      // 1. Trava window.open dos anúncios
-      window.open = function(url, name, features) {
+      const DOMINIO_OFICIAL = "troop-stream.vercel.app"; // só libera esse
+
+      function ehOficial(url) {
+          if(!url) return false;
+          return url.includes(DOMINIO_OFICIAL) || url === videoSelecionado.link;
+      }
+
+      // 1. MATA window.open que não for do troop
+      window.open = function(url) { 
+          if(ehOficial(url)) {
+              return null; // mesmo o oficial a gente bloqueia popup
+          }
           console.log("Pop-up bloqueado:", url);
           return null; 
       };
-
-      // 2. Trava clique que abre em nova aba
+      
+      // 2. MATA cliques em links externos
       document.addEventListener('click', function(e) {
           let target = e.target.closest('a');
-          if(target && target.target === '_blank') {
+          if(target && !ehOficial(target.href)) {
               e.preventDefault();
-              window.location.href = target.href; 
+              e.stopPropagation();
+              console.log("Link bloqueado:", target.href);
           }
       }, true);
 
-      // 3. Trava redirecionamento forçado por iframe
-      window.addEventListener('message', function(e) {
-          if(e.data === 'open') e.stopPropagation();
-      });
+      // 3. MATA scripts de anúncio
+      const oldCreateElement = document.createElement;
+      document.createElement = function(tag) {
+          let el = oldCreateElement.call(document, tag);
+          if(tag === 'script') {
+              Object.defineProperty(el, 'src', {
+                  set: function(url) {
+                      if(!ehOficial(url)) {
+                          console.log("Script bloqueado:", url);
+                          return;
+                      }
+                      el.setAttribute('src', url);
+                  }
+              });
+          }
+          return el;
+      };
+
+      // 4. MATA iframe que não for do troop
+      const oldSetAttribute = HTMLElement.prototype.setAttribute;
+      HTMLElement.prototype.setAttribute = function(attr, val) {
+          if(attr === 'src' && this.tagName === 'IFRAME' && !ehOficial(val)) {
+              console.log("Iframe bloqueado:", val);
+              return;
+          }
+          return oldSetAttribute.call(this, attr, val);
+      };
+
   })();
-  // ===== FIM ANTI-POPUP =====
+  // ===== FIM WHITELIST =====
 
   window.addEventListener('load', carregarVideos);
 </script>
