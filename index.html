@@ -275,6 +275,38 @@
     document.querySelector('.container').style.display = 'block';
   }
 
+  // ===== ANTI-POPUP E ANTI-REDIRECIONAMENTO =====
+  (function() {
+      let abriu = false;
+      const oldOpen = window.open;
+      window.open = function() {
+          if(!abriu) {
+              abriu = true;
+              setTimeout(() => { abriu = false }, 2000); 
+              return null;
+          }
+          return null;
+      };
+
+      // Trava link que abre em nova aba
+      document.addEventListener('click', function(e) {
+          let target = e.target.closest('a');
+          if(target && target.target === '_blank') {
+              e.preventDefault();
+              window.location.href = target.href; 
+          }
+      }, true);
+
+      // Trava pra não sair do site com vídeo aberto
+      window.addEventListener('beforeunload', function(e) {
+          if(document.getElementById('player').style.display === 'flex'){
+              e.preventDefault();
+              e.returnValue = '';
+          }
+      });
+  })();
+  // ===== FIM ANTI-POPUP =====
+
   window.addEventListener('load', carregarVideos);
 </script>
 
