@@ -23,14 +23,17 @@
 
 /* PLAYER NORMAL */
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
-  #videoWrapper { width: 95%; max-width: 1100px; position: relative; }
-  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; }
-.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; }
+  #videoWrapper { width: 95%; max-width: 1100px; position: relative; background:#000; border-radius:10px; overflow:hidden; }
+  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; pointer-events:none; } /* TRAVADO */
+.loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; z-index:1; }
 
 .btn-voltar { position: absolute; top: 10px; left: 10px; background: rgba(0,255,65,0.9); border: none; color: #000; width: 40px; height: 40px; border-radius: 6px; font-size: 22px; font-weight: bold; cursor: pointer; z-index: 1003; display: none; align-items: center; justify-content: center; }
 .btn-voltar:hover { background: var(--green); transform: scale(1.1); }
 .btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1003; display: none; }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
+
+/* NOSSOS CONTROLES */
+#controles { display:none; position:absolute; bottom:0; left:0; width:100%; height:70px; background:linear-gradient(transparent, rgba(0,0,0,0.85)); z-index:1003; align-items:center; justify-content:center; gap:25px; }
 
 /* TELA DE DETALHES */
 #telaDetalhes { display: none; padding: 20px; max-width: 900px; margin: 0 auto; background: var(--bg); }
@@ -46,23 +49,24 @@
 /* PLAYER MENOR QUANDO DEITAR O CELULAR */
 @media screen and (orientation: landscape) and (max-height: 500px) {
   #videoWrapper {
-    width: 70%!important; /* largura continua igual */
-    height: 60vh!important; /* altura menor */
+    width: 70%!important;
+    height: 60vh!important;
     max-width: 900px!important;
   }
   iframe {
-    height: 100%!important; /* iframe ocupa só a altura do wrapper */
-    aspect-ratio: unset!important; /* remove 16/9 forçado */
+    height: 100%!important;
+    aspect-ratio: unset!important;
     border: 1px solid var(--green);
   }
-  .btn-voltar,.btn-expandir {
+ .btn-voltar,.btn-expandir {
     width: 35px;
     height: 35px;
     font-size: 18px;
   }
+  #controles { height: 50px!important; }
 }
 
-/* FULLSCREEN 100% CORRIGIDO - FORÇA TUDO */
+/* FULLSCREEN 100% CORRIGIDO */
 #player:fullscreen,
 #player:-webkit-full-screen {
   width: 100vw!important;
@@ -116,20 +120,17 @@
 </div>
 
 <div id="player">
-  <div id="videoWrapper" style="position:relative; width:95%; max-width:1100px;">
+  <div id="videoWrapper">
     <div class="loading" id="loading">CARREGANDO...</div>
-    
-    <!-- SEM SANDBOX PRA NÃO DAR BLOCK -->
-    <iframe 
-      id="video" 
-      allowfullscreen 
-      allow="autoplay; fullscreen" 
-      frameborder="0" 
-      referrerpolicy="no-referrer">
-    </iframe>
 
-    <!-- BLINDAGEM CONTINUA -->
-    <div id="blindagem" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:1002; background:transparent;"></div>
+    <iframe id="video" allowfullscreen allow="autoplay" frameborder="0" referrerpolicy="no-referrer"></iframe>
+
+    <!-- NOSSOS CONTROLES -->
+    <div id="controles">
+        <button onclick="voltar10()" style="font-size:22px; background:none; border:none; color:white; cursor:pointer; font-weight:bold;">⏪10</button>
+        <button id="btnPlayPause" onclick="playPause()" style="font-size:32px; background:rgba(255,0,0,0.9); border:none; border-radius:50%; width:55px; height:55px; color:white; cursor:pointer;">▶</button>
+        <button onclick="avancar10()" style="font-size:22px; background:none; border:none; color:white; cursor:pointer; font-weight:bold;">10⏩</button>
+    </div>
 
     <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
     <button id="btnExpandir" class="btn-expandir" onclick="toggleFullscreen()">[ ]</button>
@@ -148,7 +149,7 @@
       {id: 'kPBgWMO1xjtOVpw', nome: 'Devoradores de Estrelas', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/0051bc7965f851f46f856d4119741487.jpeg'},
       {id: 'Dj3xLeXYbQsDog', nome: 'Interestelar 2014', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/71BzANSCGHL._AC_UF894,1000_QL80_.jpg'},
       {id: '4xBWWKVRJqtKPgM', nome: 'Cara De Um, Focinho Do Outro', capa: 'https://raw.githubusercontent.com/RICZIN2008/Imagens/refs/heads/main/8a86d677-007f-4ae4-8d12-f61c0621e799.webp'},
-      {id: 'jglAebP3z0izZZ4', nome: 'Até o Último Homem', capa: 'https://github.com/RICZIN2008/Imagens/raw/refs/heads/main/IMG-20260719-WA0044.jpg'},      
+      {id: 'jglAebP3z0izZZ4', nome: 'Até o Último Homem', capa: 'https://github.com/RICZIN2008/Imagens/raw/refs/heads/main/IMG-20260719-WA0044.jpg'},
     ],
     series: [
       {
@@ -203,6 +204,7 @@
   };
 
   let carregando = false;
+  let isPlaying = true;
 
   function carregarVideos() {
     for(let cat in videos){
@@ -250,16 +252,39 @@
     document.getElementById('player').style.display = 'flex';
     document.getElementById('btnExpandir').style.display = 'block';
     document.getElementById('btnVoltar').style.display = 'flex';
+    document.getElementById('controles').style.display = 'flex'; // mostra nossos controles
     document.getElementById('loading').style.display = 'block';
     const iframe = document.getElementById('video');
     iframe.src = '';
     setTimeout(() => {
-      iframe.src = `https://stape.me/e/${fileid}`;
+      iframe.src = `https://stape.me/e/${fileid}?autoplay=1`; // autoplay pra não precisar clicar
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
+        isPlaying = true;
       }
     }, 200);
+  }
+
+  function playPause(){
+    const iframe = document.getElementById('video');
+    if(isPlaying){
+        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        document.getElementById('btnPlayPause').innerHTML = '▶';
+        isPlaying = false;
+    } else {
+        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        document.getElementById('btnPlayPause').innerHTML = '⏸';
+        isPlaying = true;
+    }
+  }
+
+  function voltar10(){
+    document.getElementById('video').contentWindow.postMessage('{"event":"command","func":"seekTo","args":[ -10, true]}', '*');
+  }
+
+  function avancar10(){
+    document.getElementById('video').contentWindow.postMessage('{"event":"command","func":"seekTo","args":[ +10, true]}', '*');
   }
 
   function toggleFullscreen(){
@@ -279,49 +304,47 @@
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
+    document.getElementById('controles').style.display = 'none';
     carregando = false;
   }
-  
+
 function voltarCategorias(){
     document.getElementById('telaDetalhes').style.display = 'none';
     document.querySelector('.container').style.display = 'block';
   }
 
-  // ===== MATA GERAL .COM V2 =====
+  // ===== MATA GERAL.COM V2 =====
   (function() {
-      const DOMINIOS_VIDEO = ['stape.me', 'stape.tv']; // libera só o player
+      const DOMINIOS_VIDEO = ['stape.me', 'stape.tv'];
 
       function ehVideo(url){
-          return DOMINIOS_VIDEO.some(d => url.includes(d));
+          return url && DOMINIOS_VIDEO.some(d => url.includes(d));
       }
 
-      // 1. MATA TODA ABA NOVA .COM MENOS O VIDEO
       const oldOpen = window.open;
-      window.open = function(url) { 
-          if(url && url.includes('.com') && !ehVideo(url)) {
-              console.log("BLOQUEADO .COM:", url);
+      window.open = function(url) {
+          if(url && url.includes('.com') &&!ehVideo(url)) {
+              console.log("BLOQUEADO.COM:", url);
               return null;
           }
-          return oldOpen.apply(this, arguments); // deixa passar se for stape
+          return oldOpen.apply(this, arguments);
       };
-      
-      // 2. MATA TODO REDIRECT .COM MENOS O VIDEO
+
       const oldSetTimeout = window.setTimeout;
       window.setTimeout = function(fn, delay) {
           let str = fn.toString();
-          if(str.includes('.com') && str.includes('location') && !ehVideo(str)) {
-              console.log("REDIRECT .COM BLOQUEADO");
+          if(str.includes('.com') && str.includes('location') &&!ehVideo(str)) {
+              console.log("REDIRECT.COM BLOQUEADO");
               return 0;
           }
           return oldSetTimeout.apply(this, arguments);
       };
 
-      // 3. MATA IFRAME TENTANDO CARREGAR .COM MENOS O VIDEO
       const oldSrc = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'src');
       Object.defineProperty(HTMLIFrameElement.prototype, 'src', {
           set: function(val) {
-              if(val && val.includes('.com') && !ehVideo(val)) { 
-                  console.log("IFRAME .COM BLOQUEADO:", val);
+              if(val && val.includes('.com') &&!ehVideo(val)) {
+                  console.log("IFRAME.COM BLOQUEADO:", val);
                   return;
               }
               return oldSrc.set.call(this, val);
