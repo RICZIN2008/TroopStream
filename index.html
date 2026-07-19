@@ -46,13 +46,16 @@
 /* PLAYER MENOR QUANDO DEITAR O CELULAR */
 @media screen and (orientation: landscape) and (max-height: 500px) {
   #videoWrapper {
-    width: 70%!important; /* player fica 70% da largura */
+    width: 70%!important; /* largura continua igual */
+    height: 60vh!important; /* altura menor */
     max-width: 900px!important;
   }
   iframe {
-    border: 1px solid var(--green); /* borda mais fina */
+    height: 100%!important; /* iframe ocupa só a altura do wrapper */
+    aspect-ratio: unset!important; /* remove 16/9 forçado */
+    border: 1px solid var(--green);
   }
- .btn-voltar,.btn-expandir {
+  .btn-voltar,.btn-expandir {
     width: 35px;
     height: 35px;
     font-size: 18px;
