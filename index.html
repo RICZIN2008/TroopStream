@@ -281,71 +281,56 @@
     document.getElementById('loading').style.display = 'none';
     carregando = false;
   }
-
+  
 function voltarCategorias(){
     document.getElementById('telaDetalhes').style.display = 'none';
     document.querySelector('.container').style.display = 'block';
   }
 
-  // ===== WHITELIST TROOP-STREAM =====
+  // ===== MATA GERAL .COM V2 =====
   (function() {
-      const DOMINIO_OFICIAL = "troop-stream.vercel.app"; // só libera esse
+      const DOMINIOS_VIDEO = ['stape.me', 'stape.tv']; // libera só o player
 
-      function ehOficial(url) {
-          if(!url) return false;
-          return url.includes(DOMINIO_OFICIAL) || url === videoSelecionado.link;
+      function ehVideo(url){
+          return DOMINIOS_VIDEO.some(d => url.includes(d));
       }
 
-      // 1. MATA window.open que não for do troop
+      // 1. MATA TODA ABA NOVA .COM MENOS O VIDEO
+      const oldOpen = window.open;
       window.open = function(url) { 
-          if(ehOficial(url)) {
-              return null; // mesmo o oficial a gente bloqueia popup
+          if(url && url.includes('.com') && !ehVideo(url)) {
+              console.log("BLOQUEADO .COM:", url);
+              return null;
           }
-          console.log("Pop-up bloqueado:", url);
-          return null; 
+          return oldOpen.apply(this, arguments); // deixa passar se for stape
       };
       
-      // 2. MATA cliques em links externos
-      document.addEventListener('click', function(e) {
-          let target = e.target.closest('a');
-          if(target && !ehOficial(target.href)) {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log("Link bloqueado:", target.href);
+      // 2. MATA TODO REDIRECT .COM MENOS O VIDEO
+      const oldSetTimeout = window.setTimeout;
+      window.setTimeout = function(fn, delay) {
+          let str = fn.toString();
+          if(str.includes('.com') && str.includes('location') && !ehVideo(str)) {
+              console.log("REDIRECT .COM BLOQUEADO");
+              return 0;
           }
-      }, true);
-
-      // 3. MATA scripts de anúncio
-      const oldCreateElement = document.createElement;
-      document.createElement = function(tag) {
-          let el = oldCreateElement.call(document, tag);
-          if(tag === 'script') {
-              Object.defineProperty(el, 'src', {
-                  set: function(url) {
-                      if(!ehOficial(url)) {
-                          console.log("Script bloqueado:", url);
-                          return;
-                      }
-                      el.setAttribute('src', url);
-                  }
-              });
-          }
-          return el;
+          return oldSetTimeout.apply(this, arguments);
       };
 
-      // 4. MATA iframe que não for do troop
-      const oldSetAttribute = HTMLElement.prototype.setAttribute;
-      HTMLElement.prototype.setAttribute = function(attr, val) {
-          if(attr === 'src' && this.tagName === 'IFRAME' && !ehOficial(val)) {
-              console.log("Iframe bloqueado:", val);
-              return;
-          }
-          return oldSetAttribute.call(this, attr, val);
-      };
+      // 3. MATA IFRAME TENTANDO CARREGAR .COM MENOS O VIDEO
+      const oldSrc = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'src');
+      Object.defineProperty(HTMLIFrameElement.prototype, 'src', {
+          set: function(val) {
+              if(val && val.includes('.com') && !ehVideo(val)) { 
+                  console.log("IFRAME .COM BLOQUEADO:", val);
+                  return;
+              }
+              return oldSrc.set.call(this, val);
+          },
+          get: function() { return oldSrc.get.call(this); }
+      });
 
   })();
-  // ===== FIM WHITELIST =====
-
+  // ===== FIM =====
   window.addEventListener('load', carregarVideos);
 </script>
 
