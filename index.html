@@ -270,25 +270,20 @@
     carregando = false;
   }
 
-  function voltarCategorias(){
+function voltarCategorias(){
     document.getElementById('telaDetalhes').style.display = 'none';
     document.querySelector('.container').style.display = 'block';
   }
 
-  // ===== ANTI-POPUP E ANTI-REDIRECIONAMENTO =====
+  // ===== ANTI-POPUP SEM PEDIR PERMISSÃO =====
   (function() {
-      let abriu = false;
-      const oldOpen = window.open;
-      window.open = function() {
-          if(!abriu) {
-              abriu = true;
-              setTimeout(() => { abriu = false }, 2000); 
-              return null;
-          }
-          return null;
+      // 1. Trava window.open dos anúncios
+      window.open = function(url, name, features) {
+          console.log("Pop-up bloqueado:", url);
+          return null; 
       };
 
-      // Trava link que abre em nova aba
+      // 2. Trava clique que abre em nova aba
       document.addEventListener('click', function(e) {
           let target = e.target.closest('a');
           if(target && target.target === '_blank') {
@@ -297,12 +292,9 @@
           }
       }, true);
 
-      // Trava pra não sair do site com vídeo aberto
-      window.addEventListener('beforeunload', function(e) {
-          if(document.getElementById('player').style.display === 'flex'){
-              e.preventDefault();
-              e.returnValue = '';
-          }
+      // 3. Trava redirecionamento forçado por iframe
+      window.addEventListener('message', function(e) {
+          if(e.data === 'open') e.stopPropagation();
       });
   })();
   // ===== FIM ANTI-POPUP =====
