@@ -24,16 +24,13 @@
 /* PLAYER NORMAL */
   #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; justify-content: center; align-items: center; z-index: 1000; }
   #videoWrapper { width: 95%; max-width: 1100px; position: relative; background:#000; border-radius:10px; overflow:hidden; }
-  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; pointer-events:none; } /* TRAVADO */
+  iframe { width: 100%; aspect-ratio: 16/9; background: #000; border: 2px solid var(--green); display: block; }
 .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: var(--green); font-size: 14px; z-index:1; }
 
 .btn-voltar { position: absolute; top: 10px; left: 10px; background: rgba(0,255,65,0.9); border: none; color: #000; width: 40px; height: 40px; border-radius: 6px; font-size: 22px; font-weight: bold; cursor: pointer; z-index: 1003; display: none; align-items: center; justify-content: center; }
 .btn-voltar:hover { background: var(--green); transform: scale(1.1); }
 .btn-expandir { position: absolute; bottom: 10px; right: 10px; width: 40px; height: 40px; background: rgba(0,255,65,0.9); border: none; border-radius: 6px; color: #000; font-size: 20px; font-weight: bold; cursor: pointer; z-index: 1003; display: none; }
 .btn-expandir:hover { background: var(--green); transform: scale(1.1); }
-
-/* NOSSOS CONTROLES */
-#controles { display:none; position:absolute; bottom:0; left:0; width:100%; height:70px; background:linear-gradient(transparent, rgba(0,0,0,0.85)); z-index:1003; align-items:center; justify-content:center; gap:25px; }
 
 /* TELA DE DETALHES */
 #telaDetalhes { display: none; padding: 20px; max-width: 900px; margin: 0 auto; background: var(--bg); }
@@ -63,7 +60,6 @@
     height: 35px;
     font-size: 18px;
   }
-  #controles { height: 50px!important; }
 }
 
 /* FULLSCREEN 100% CORRIGIDO */
@@ -125,11 +121,10 @@
 
     <iframe id="video" allowfullscreen allow="autoplay" frameborder="0" referrerpolicy="no-referrer"></iframe>
 
-    <!-- NOSSOS CONTROLES -->
-    <div id="controles">
-        <button onclick="voltar10()" style="font-size:22px; background:none; border:none; color:white; cursor:pointer; font-weight:bold;">⏪10</button>
-        <button id="btnPlayPause" onclick="playPause()" style="font-size:32px; background:rgba(255,0,0,0.9); border:none; border-radius:50%; width:55px; height:55px; color:white; cursor:pointer;">▶</button>
-        <button onclick="avancar10()" style="font-size:22px; background:none; border:none; color:white; cursor:pointer; font-weight:bold;">10⏩</button>
+    <!-- BLINDAGEM - 1º CLIQUE TIRA ELA -->
+    <div id="blindagem" onclick="liberarVideo()" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1002; display:none; align-items:center; justify-content:center; flex-direction:column; gap:15px; cursor:pointer;">
+        <button style="font-size:60px; background:rgba(255,0,0,0.9); border:none; border-radius:50%; width:80px; height:80px; color:white; cursor:pointer; pointer-events:none;">▶</button>
+        <span style="color:var(--green); font-size:14px;">CLIQUE PARA ASSISTIR</span>
     </div>
 
     <button id="btnVoltar" class="btn-voltar" onclick="fecharVideo()">←</button>
@@ -204,7 +199,7 @@
   };
 
   let carregando = false;
-  let isPlaying = true;
+  let blindagemLiberada = false;
 
   function carregarVideos() {
     for(let cat in videos){
@@ -249,42 +244,30 @@
   function abrirVideo(fileid) {
     if(carregando) return;
     carregando = true;
+    blindagemLiberada = false;
+
     document.getElementById('player').style.display = 'flex';
     document.getElementById('btnExpandir').style.display = 'block';
     document.getElementById('btnVoltar').style.display = 'flex';
-    document.getElementById('controles').style.display = 'flex'; // mostra nossos controles
+    document.getElementById('blindagem').style.display = 'flex'; // liga blindagem
     document.getElementById('loading').style.display = 'block';
+
     const iframe = document.getElementById('video');
     iframe.src = '';
     setTimeout(() => {
-      iframe.src = `https://stape.me/e/${fileid}?autoplay=1`; // autoplay pra não precisar clicar
+      iframe.src = `https://stape.me/e/${fileid}?autoplay=1`;
       iframe.onload = () => {
         document.getElementById('loading').style.display = 'none';
         carregando = false;
-        isPlaying = true;
       }
     }, 200);
   }
 
-  function playPause(){
-    const iframe = document.getElementById('video');
-    if(isPlaying){
-        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        document.getElementById('btnPlayPause').innerHTML = '▶';
-        isPlaying = false;
-    } else {
-        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        document.getElementById('btnPlayPause').innerHTML = '⏸';
-        isPlaying = true;
+  function liberarVideo(){
+    if(!blindagemLiberada){
+        document.getElementById('blindagem').style.display = 'none'; // tira a blindagem
+        blindagemLiberada = true;
     }
-  }
-
-  function voltar10(){
-    document.getElementById('video').contentWindow.postMessage('{"event":"command","func":"seekTo","args":[ -10, true]}', '*');
-  }
-
-  function avancar10(){
-    document.getElementById('video').contentWindow.postMessage('{"event":"command","func":"seekTo","args":[ +10, true]}', '*');
   }
 
   function toggleFullscreen(){
@@ -304,8 +287,9 @@
     document.getElementById('player').style.display = 'none';
     document.getElementById('video').src = '';
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('controles').style.display = 'none';
+    document.getElementById('blindagem').style.display = 'none';
     carregando = false;
+    blindagemLiberada = false;
   }
 
 function voltarCategorias(){
